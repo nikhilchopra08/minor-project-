@@ -253,9 +253,6 @@ export default function Page() {
           ref={thirdSectionRef}
           className="absolute top-0 left-0 w-full h-screen bg-green-500 flex justify-center items-center"
         >
-          <h2 className="text-4xl md:text-6xl font-bold text-white text-center">
-            THIRD CHAPTER
-          </h2>
         </section>
       </div>
 
