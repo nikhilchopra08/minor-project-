@@ -1,263 +1,194 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
-import Lenis from "@studio-freight/lenis";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef, useEffect } from 'react';
+import gsap from 'gsap';
 
-gsap.registerPlugin(ScrollTrigger);
+interface CharacterAnimationProps {
+  word?: string;
+  topColor?: string;
+  bottomCharColor?: string;
+  bottomBgColor?: string;
+  finalColor?: string;
+  backgroundColor?: string;
+  duration?: number;
+}
 
-export default function Page() {
+const CharacterAnimation: React.FC<CharacterAnimationProps> = ({
+  word = "ANIMATE",
+  topColor = "#ff6b6b",
+  bottomCharColor = "#ffffff",
+  bottomBgColor = "#4ecdc4", 
+  finalColor = "#ffffff",
+  backgroundColor = "#2d3436",
+  duration = 1.5
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const zoomTextRef = useRef<HTMLHeadingElement>(null);
-  const nextSectionRef = useRef<HTMLDivElement>(null);
-  const secondSectionRef = useRef<HTMLDivElement>(null);
-  const thirdSectionRef = useRef<HTMLDivElement>(null);
-  const masterContainerRef = useRef<HTMLDivElement>(null);
+  const charsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const bottomBgRef = useRef<HTMLDivElement>(null);
+  const isAnimating = useRef(false);
+
+  // Get first 6 characters of the word
+  const displayChars = word.slice(0, 6).split('');
+  
+  // Create alternating pattern: characters at even indices go to top, odd to bottom
+  const topChars = displayChars.filter((_, index) => index % 2 === 0);
+  const bottomChars = displayChars.filter((_, index) => index % 2 === 1);
 
   useEffect(() => {
-    // --- ULTRA SMOOTH LENIS ---
-    const lenis = new Lenis({
-      duration: 1.6,
-      smoothWheel: true,
-      smoothTouch: true,
-      easing: (t: number) => 1 - Math.pow(1 - t, 3), // buttery cubic smoothing
+    if (!containerRef.current || isAnimating.current) return;
+    isAnimating.current = true;
+
+    const chars = charsRef.current.filter(Boolean) as HTMLDivElement[];
+    const topCharElements = chars.filter((_, index) => index % 2 === 0);
+    const bottomCharElements = chars.filter((_, index) => index % 2 === 1);
+    const bottomBg = bottomBgRef.current;
+
+    // Set initial positions - ALL characters visible from start
+    gsap.set(chars, { 
+      opacity: 1
+    });
+    
+    // Set initial positions - top characters at Y: 0 (centered)
+    gsap.set(topCharElements, { 
+      color: topColor,
+      y: 0
+    });
+    
+    // Bottom characters start at the very bottom of the screen
+    gsap.set(bottomCharElements, { 
+      y: window.innerHeight,
+      color: bottomCharColor
     });
 
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-    // Get elements
-    const zoomText = zoomTextRef.current;
-    const nextSection = nextSectionRef.current;
-    const secondSection = secondSectionRef.current;
-    const thirdSection = thirdSectionRef.current;
-    const masterContainer = masterContainerRef.current;
-
-    if (zoomText && nextSection && secondSection && thirdSection && masterContainer) {
-      // Get all text elements
-      const nextSectionText = nextSection.querySelector("h2");
-      const secondSectionText = secondSection.querySelector("h2");
-      const thirdSectionText = thirdSection.querySelector("h2");
-
-      // Initial section states (soft)
-      gsap.set([nextSection, secondSection, thirdSection], {
-        opacity: 0,
-        scale: 0.92,
-      });
-
-      // Initial text scales
-      gsap.set([zoomText, nextSectionText, secondSectionText, thirdSectionText], {
-        scale: 1,
-      });
-
-      // MASTER TIMELINE (extra smooth with better pacing)
-      const masterTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: masterContainer,
-          start: "top top",
-          end: "+=900%",      // more scroll distance for better control
-          scrub: 2.4,          // ultra smooth motion
-          pin: true,
-        },
-        defaults: { ease: "power1.inOut" },
-      });
-
-      // --- FIRST → NEXT ---
-      // Hold first section fully visible
-      masterTl.to(zoomText, {
-        scale: 1,
-        duration: 6,
-      });
-
-      // Scale up first text while fading out
-      masterTl.to(zoomText, {
-        scale: 1.1,
-        duration: 6,
-      });
-
-      masterTl.to(zoomText.parentElement, {
-        opacity: 0,
-        scale: 1.1,
-        duration: 5,
-      }, "<");
-
-      // Scale in next section text
-      masterTl.fromTo(
-        nextSectionText,
-        { scale: 10 },
-        {
-          scale: 1,
-          duration: 5,
-        },
-        "<50%"
-      );
-
-      masterTl.to(
-        nextSection,
-        {
-          opacity: 1,
-          scale: 1,
-          duration: 5,
-        },
-        "<"
-      );
-
-      // Hold next section fully visible
-      masterTl.to(nextSectionText, {
-        scale: 1,
-        duration: 6,
-      });
-
-      // --- NEXT → SECOND ---
-      // Scale up next section text while fading out
-      masterTl.to(nextSectionText, {
-        scale: 10,
-        duration: 5,
-      });
-
-      masterTl.to(nextSection, {
-        opacity: 0,
-        scale: 1.05,
-        duration: 5,
-      }, "<");
-
-      // Scale in second section text
-      masterTl.fromTo(
-        secondSectionText,
-        { scale: 0.1 },
-        {
-          scale: 1,
-          duration: 5,
-        },
-        "<50%"
-      );
-
-      masterTl.to(
-        secondSection,
-        {
-          opacity: 1,
-          scale: 1,
-          duration: 5,
-        },
-        "<"
-      );
-
-      // Hold second section fully visible
-      masterTl.to(secondSectionText, {
-        scale: 1,
-        duration: 6,
-      });
-
-      // --- SECOND → THIRD ---
-      // Scale up second section text while fading out
-      masterTl.to(secondSectionText, {
-        scale: 10,
-        duration: 5,
-      });
-
-      masterTl.to(secondSection, {
-        opacity: 0,
-        scale: 1.05,
-        duration: 5,
-      }, "<");
-
-      // Scale in third section text
-      masterTl.fromTo(
-        thirdSectionText,
-        { scale: 0.1 },
-        {
-          scale: 1,
-          duration: 5,
-        },
-        "<50%"
-      );
-
-      masterTl.to(
-        thirdSection,
-        {
-          opacity: 1,
-          scale: 1,
-          duration: 5,
-        },
-        "<"
-      );
-
-      // Hold third section fully visible
-      masterTl.to(thirdSectionText, {
-        scale: 1,
-        duration: 6,
+    // Bottom background starts well below the screen
+    if (bottomBg) {
+      gsap.set(bottomBg, {
+        y: window.innerHeight + 350, // Start completely off-screen at the bottom
+        backgroundColor: bottomBgColor,
+        width: '100vw',
+        height: '100vh',
+        opacity: 1,
+        position: 'absolute',
+        top: 0,
+        left: 0
       });
     }
+
+    // Create timeline
+    const tl = gsap.timeline();
+
+    // Animate bottom characters up first (faster)
+    tl.to(bottomCharElements, {
+      y: 0,
+      duration: duration * 0.7, // 70% of total duration - faster
+      // ease: "back.out(1)"
+    }, 0);
+
+    // Background animates up slower than the characters
+    tl.to(bottomBg, {
+      y: 0, // Background moves to cover the screen
+      duration: duration, // Full duration - slower
+      ease: "power2.out"
+    }, 0);
+
+    // Start color change when background is about 70% of the way up
+    // This makes the color change complete around the same time the background reaches top
+    tl.to([...topCharElements, ...bottomCharElements], {
+      color: backgroundColor, // Change text color to the original background color
+      duration: duration * 0.6, // Shorter duration for color change
+      ease: "power2.inOut"
+    }, duration * 0.4); // Start color change when background is 40% through its animation
 
     return () => {
-      lenis.destroy();
-      ScrollTrigger.getAll().forEach((st) => st.kill());
+      tl.kill();
     };
-  }, []);
+  }, [word, topColor, bottomCharColor, bottomBgColor, finalColor, backgroundColor, duration]);
+
+  const addToRefs = (el: HTMLDivElement | null, index: number) => {
+    charsRef.current[index] = el;
+  };
+
+  // Create the character layout with proper alternating order
+  const renderCharacters = () => {
+    const elements: JSX.Element[] = [];
+    
+    displayChars.forEach((char, index) => {
+      const isTop = index % 2 === 0;
+      
+      elements.push(
+        <div
+          key={index}
+          ref={(el) => addToRefs(el, index)}
+          style={{
+            color: isTop ? topColor : bottomCharColor,
+            willChange: 'transform',
+            zIndex: isTop ? 20 : 30 // Bottom characters have HIGHER z-index to be on top of bg
+          }}
+        >
+          {char}
+        </div>
+      );
+    });
+    
+    return elements;
+  };
 
   return (
-    <div
+    <div 
       ref={containerRef}
-      className="min-h-screen bg-black text-white overflow-hidden"
+      style={{
+        backgroundColor: backgroundColor,
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'start',
+        overflow: 'hidden',
+        position: 'relative',
+        transition: 'background-color 0.5s ease'
+      }}
     >
-      {/* Intro spacing */}
-      <div className="h-[100vh] bg-black" />
-
-      {/* MASTER CONTAINER */}
-      <div ref={masterContainerRef} className="relative">
-
-        {/* FIRST SECTION */}
-        <section className="absolute top-0 left-0 w-full h-screen bg-blue-500 flex flex-col justify-between items-center py-8">
-          <p className="text-xl md:text-2xl text-white text-center px-4 mt-8">
-            Every story has its conclusion
-          </p>
-
-          <h2
-            ref={zoomTextRef}
-            className="text-6xl md:text-8xl font-bold text-white text-center px-4"
-          >
-            THE JOURNEY ENDS HERE
-          </h2>
-
-          <p className="text-xl md:text-2xl text-white text-center px-4 mb-8">
-            But memories last forever
-          </p>
-        </section>
-
-        {/* NEXT SECTION */}
-        <section
-          ref={nextSectionRef}
-          className="absolute top-0 left-0 w-full h-screen bg-purple-600 flex justify-center items-center"
-        >
-          <h2 className="text-4xl md:text-6xl font-bold text-white text-center">
-            A NEW CHAPTER BEGINS
-          </h2>
-        </section>
-
-        {/* SECOND SECTION */}
-        <section
-          ref={secondSectionRef}
-          className="absolute top-0 left-0 w-full h-screen bg-orange-500 flex justify-center items-center"
-        >
-          <h2 className="text-4xl md:text-6xl font-bold text-white text-center">
-            SECOND CHAPTER
-          </h2>
-        </section>
-
-        {/* THIRD SECTION */}
-        <section
-          ref={thirdSectionRef}
-          className="absolute top-0 left-0 w-full h-screen bg-green-500 flex justify-center items-center"
-        >
-        </section>
+      {/* Full width bottom background that moves below the bottom characters */}
+      <div 
+        ref={bottomBgRef}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          opacity: 0,
+          zIndex: 10 // Lower z-index than bottom characters (which have z-index 30)
+        }}
+      />
+      
+      <div style={{
+        display: 'flex',
+        gap: '20px',
+        fontSize: '4rem',
+        fontWeight: 'bold',
+        fontFamily: 'Arial, sans-serif',
+        position: 'relative',
+        zIndex: 20 // Base z-index for character container
+      }}>
+        {renderCharacters()}
       </div>
-
-      {/* Outro spacing */}
-      <div className="h-[100vh] bg-black" />
     </div>
+  );
+};
+
+export default function Home() {
+  return (
+    <main>
+      <CharacterAnimation 
+        word="GSAPJS"
+        topColor="#ff6b6b"
+        bottomCharColor="#ffffff"
+        bottomBgColor="#4ecdc4"
+        finalColor="#ffffff"
+        backgroundColor="#2d3436"
+        duration={1.5}
+      />
+    </main>
   );
 }
