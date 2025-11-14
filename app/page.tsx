@@ -11,112 +11,188 @@ export default function Page() {
   const containerRef = useRef<HTMLDivElement>(null);
   const zoomTextRef = useRef<HTMLHeadingElement>(null);
   const nextSectionRef = useRef<HTMLDivElement>(null);
-  const topSentenceRef = useRef<HTMLParagraphElement>(null);
-  const boomSectionRef = useRef<HTMLDivElement>(null);
-  const boomTextRef = useRef<HTMLHeadingElement>(null);
+  const secondSectionRef = useRef<HTMLDivElement>(null);
+  const thirdSectionRef = useRef<HTMLDivElement>(null);
+  const masterContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // --- Initialize Lenis ---
+    // --- ULTRA SMOOTH LENIS ---
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: 1.6,
       smoothWheel: true,
+      smoothTouch: true,
+      easing: (t: number) => 1 - Math.pow(1 - t, 3), // buttery cubic smoothing
     });
 
-    const raf = (time: number) => {
+    function raf(time: number) {
       lenis.raf(time);
       requestAnimationFrame(raf);
-    };
+    }
     requestAnimationFrame(raf);
 
-    // --- Timeline for first zoom transition ---
+    // Get elements
     const zoomText = zoomTextRef.current;
     const nextSection = nextSectionRef.current;
-    const topSentence = topSentenceRef.current;
+    const secondSection = secondSectionRef.current;
+    const thirdSection = thirdSectionRef.current;
+    const masterContainer = masterContainerRef.current;
 
-    if (zoomText && nextSection && topSentence) {
-      const firstTl = gsap.timeline({
+    if (zoomText && nextSection && secondSection && thirdSection && masterContainer) {
+      // Get all text elements
+      const nextSectionText = nextSection.querySelector("h2");
+      const secondSectionText = secondSection.querySelector("h2");
+      const thirdSectionText = thirdSection.querySelector("h2");
+
+      // Initial section states (soft)
+      gsap.set([nextSection, secondSection, thirdSection], {
+        opacity: 0,
+        scale: 0.92,
+      });
+
+      // Initial text scales
+      gsap.set([zoomText, nextSectionText, secondSectionText, thirdSectionText], {
+        scale: 1,
+      });
+
+      // MASTER TIMELINE (extra smooth with better pacing)
+      const masterTl = gsap.timeline({
         scrollTrigger: {
-          trigger: ".zoom-section",
+          trigger: masterContainer,
           start: "top top",
-          end: "+=300%",
-          scrub: true,
+          end: "+=900%",      // more scroll distance for better control
+          scrub: 2.4,          // ultra smooth motion
           pin: true,
         },
+        defaults: { ease: "power1.inOut" },
       });
 
-      // Initial state - wait for top sentence to reach top
-      firstTl.to({}, { duration: 0.2 });
+      // --- FIRST → NEXT ---
+      // Hold first section fully visible
+      masterTl.to(zoomText, {
+        scale: 1,
+        duration: 6,
+      });
 
-      // Text zoom out and fade
-      firstTl.to(zoomText, {
-        scale: 10,
+      // Scale up first text while fading out
+      masterTl.to(zoomText, {
+        scale: 1.1,
+        duration: 6,
+      });
+
+      masterTl.to(zoomText.parentElement, {
         opacity: 0,
-        ease: "power2.inOut",
-        duration: 0.8,
-      });
+        scale: 1.1,
+        duration: 5,
+      }, "<");
 
-      // Next section emerges from center simultaneously
-      firstTl.fromTo(
+      // Scale in next section text
+      masterTl.fromTo(
+        nextSectionText,
+        { scale: 10 },
+        {
+          scale: 1,
+          duration: 5,
+        },
+        "<50%"
+      );
+
+      masterTl.to(
         nextSection,
-        { 
-          opacity: 0, 
-          scale: 0.3,
-        },
-        { 
-          opacity: 1, 
-          scale: 1, 
-          ease: "power2.out",
-          duration: 0.8,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 5,
         },
         "<"
       );
-    }
 
-    // --- Timeline for second zoom transition ---
-    const boomSection = boomSectionRef.current;
-    const boomText = boomTextRef.current;
-
-    if (nextSection && boomSection && boomText) {
-      const secondTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ".next-section-container",
-          start: "top top",
-          end: "+=300%",
-          scrub: true,
-          pin: true,
-        },
+      // Hold next section fully visible
+      masterTl.to(nextSectionText, {
+        scale: 1,
+        duration: 6,
       });
 
-      // Initial state
-      secondTl.to({}, { duration: 0.2 });
-
-      // "A NEW CHAPTER BEGINS" zooms out and fades
-      secondTl.to(nextSection, {
+      // --- NEXT → SECOND ---
+      // Scale up next section text while fading out
+      masterTl.to(nextSectionText, {
         scale: 10,
-        opacity: 0,
-        ease: "power2.inOut",
-        duration: 0.8,
+        duration: 5,
       });
 
-      // Boom section emerges from center simultaneously
-      secondTl.fromTo(
-        boomSection,
-        { 
-          opacity: 0, 
-          scale: 0.3,
+      masterTl.to(nextSection, {
+        opacity: 0,
+        scale: 1.05,
+        duration: 5,
+      }, "<");
+
+      // Scale in second section text
+      masterTl.fromTo(
+        secondSectionText,
+        { scale: 0.1 },
+        {
+          scale: 1,
+          duration: 5,
         },
-        { 
-          opacity: 1, 
-          scale: 1, 
-          ease: "power2.out",
-          duration: 0.8,
+        "<50%"
+      );
+
+      masterTl.to(
+        secondSection,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 5,
         },
         "<"
       );
+
+      // Hold second section fully visible
+      masterTl.to(secondSectionText, {
+        scale: 1,
+        duration: 6,
+      });
+
+      // --- SECOND → THIRD ---
+      // Scale up second section text while fading out
+      masterTl.to(secondSectionText, {
+        scale: 10,
+        duration: 5,
+      });
+
+      masterTl.to(secondSection, {
+        opacity: 0,
+        scale: 1.05,
+        duration: 5,
+      }, "<");
+
+      // Scale in third section text
+      masterTl.fromTo(
+        thirdSectionText,
+        { scale: 0.1 },
+        {
+          scale: 1,
+          duration: 5,
+        },
+        "<50%"
+      );
+
+      masterTl.to(
+        thirdSection,
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 5,
+        },
+        "<"
+      );
+
+      // Hold third section fully visible
+      masterTl.to(thirdSectionText, {
+        scale: 1,
+        duration: 6,
+      });
     }
 
-    // Cleanup
     return () => {
       lenis.destroy();
       ScrollTrigger.getAll().forEach((st) => st.kill());
@@ -129,62 +205,62 @@ export default function Page() {
       className="min-h-screen bg-black text-white overflow-hidden"
     >
       {/* Intro spacing */}
-      <div className="h-[100vh] bg-black"></div>
+      <div className="h-[100vh] bg-black" />
 
-      {/* First Zoom Section */}
-      <section className="zoom-section relative h-screen bg-blue-500 flex flex-col justify-between items-center py-8">
-        {/* Top sentence - triggers the animation */}
-        <p 
-          ref={topSentenceRef}
-          className="text-xl md:text-2xl text-white text-center px-4 mt-8"
-        >
-          Every story has its conclusion
-        </p>
+      {/* MASTER CONTAINER */}
+      <div ref={masterContainerRef} className="relative">
 
-        {/* Main zoom text */}
-        <h2
-          ref={zoomTextRef}
-          className="text-6xl md:text-8xl font-bold text-white text-center px-4"
-        >
-          THE JOURNEY ENDS HERE
-        </h2>
+        {/* FIRST SECTION */}
+        <section className="absolute top-0 left-0 w-full h-screen bg-blue-500 flex flex-col justify-between items-center py-8">
+          <p className="text-xl md:text-2xl text-white text-center px-4 mt-8">
+            Every story has its conclusion
+          </p>
 
-        {/* Bottom sentence */}
-        <p className="text-xl md:text-2xl text-white text-center px-4 mb-8">
-          But memories last forever
-        </p>
-      </section>
+          <h2
+            ref={zoomTextRef}
+            className="text-6xl md:text-8xl font-bold text-white text-center px-4"
+          >
+            THE JOURNEY ENDS HERE
+          </h2>
 
-      {/* Next Section Container */}
-      <div className="next-section-container relative">
-        {/* Next Section (Emerges from center) */}
+          <p className="text-xl md:text-2xl text-white text-center px-4 mb-8">
+            But memories last forever
+          </p>
+        </section>
+
+        {/* NEXT SECTION */}
         <section
           ref={nextSectionRef}
-          className="next-section relative h-screen bg-purple-600 flex justify-center items-center"
+          className="absolute top-0 left-0 w-full h-screen bg-purple-600 flex justify-center items-center"
         >
           <h2 className="text-4xl md:text-6xl font-bold text-white text-center">
             A NEW CHAPTER BEGINS
           </h2>
         </section>
 
-        {/* Boom Section (Emerges from center) */}
+        {/* SECOND SECTION */}
         <section
-          ref={boomSectionRef}
-          className="boom-section fixed inset-0 flex justify-center items-center pointer-events-none opacity-0"
-          style={{ transform: "scale(0.3)" }}
+          ref={secondSectionRef}
+          className="absolute top-0 left-0 w-full h-screen bg-orange-500 flex justify-center items-center"
         >
-          <h2 
-            ref={boomTextRef}
-            className="text-4xl md:text-6xl font-bold text-green-400 text-center"
-          >
-            boom new chapter again
+          <h2 className="text-4xl md:text-6xl font-bold text-white text-center">
+            SECOND CHAPTER
+          </h2>
+        </section>
+
+        {/* THIRD SECTION */}
+        <section
+          ref={thirdSectionRef}
+          className="absolute top-0 left-0 w-full h-screen bg-green-500 flex justify-center items-center"
+        >
+          <h2 className="text-4xl md:text-6xl font-bold text-white text-center">
+            THIRD CHAPTER
           </h2>
         </section>
       </div>
 
-      {/* Additional space */}
-      <div className="h-[200vh] bg-black"></div>
+      {/* Outro spacing */}
+      <div className="h-[100vh] bg-black" />
     </div>
   );
 }
-
