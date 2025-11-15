@@ -88,7 +88,15 @@ export const UpdatePackageSchema = z.object({
   serviceIds: z.array(z.string()).min(1, "At least one service is required").optional(),
 });
 
-
+export const AdminQuerySchema = z.object({
+  page: z.string().optional().default("1").transform(Number),
+  limit: z.string().optional().default("10").transform(Number),
+  search: z.string().optional(),
+  role: z.enum(['USER', 'DEALER', 'ADMIN']).optional(),
+  status: z.enum(['active', 'inactive']).optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+});
 
 export type RegisterUserInput = z.infer<typeof RegisterUserSchema>;
 export type RegisterDealerInput = z.infer<typeof RegisterDealerSchema>;
@@ -101,3 +109,5 @@ export type CreateServiceInput = z.infer<typeof CreateServiceSchema>;
 export type UpdateServiceInput = z.infer<typeof UpdateServiceSchema>;
 export type CreatePackageInput = z.infer<typeof CreatePackageSchema>;
 export type UpdatePackageInput = z.infer<typeof UpdatePackageSchema>;
+
+export type AdminQueryInput = z.infer<typeof AdminQuerySchema>;

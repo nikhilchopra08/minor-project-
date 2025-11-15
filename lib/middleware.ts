@@ -28,3 +28,9 @@ export const roleMiddleware = (allowedRoles: string[]) => {
     return user !== null && allowedRoles.includes(user.role);
   };
 };
+
+// Admin specific middleware
+export const adminMiddleware = async (req: NextRequest): Promise<AuthUser | null> => {
+  const user = await authMiddleware(req);
+  return user && user.role === 'ADMIN' ? user : null;
+};
