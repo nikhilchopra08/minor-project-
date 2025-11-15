@@ -51,9 +51,53 @@ export const RefreshTokenSchema = z.object({
   refreshToken: z.string().min(1, "Refresh token is required"),
 });
 
+
+// Service Schemas
+export const CreateServiceSchema = z.object({
+  name: z.string().min(1, "Service name is required"),
+  description: z.string().optional(),
+  category: z.string().min(1, "Category is required"),
+  price: z.number().min(0, "Price must be positive").optional(),
+  duration: z.number().min(1, "Duration must be at least 1 hour").optional(),
+});
+
+export const UpdateServiceSchema = z.object({
+  name: z.string().min(1, "Service name is required").optional(),
+  description: z.string().optional(),
+  category: z.string().min(1, "Category is required").optional(),
+  price: z.number().min(0, "Price must be positive").optional(),
+  duration: z.number().min(1, "Duration must be at least 1 hour").optional(),
+  isActive: z.boolean().optional(),
+});
+
+// Package Schemas
+export const CreatePackageSchema = z.object({
+  name: z.string().min(1, "Package name is required"),
+  description: z.string().optional(),
+  price: z.number().min(0, "Price must be positive"),
+  duration: z.number().min(1, "Duration must be at least 1 day").optional(),
+  serviceIds: z.array(z.string()).min(1, "At least one service is required"),
+});
+
+export const UpdatePackageSchema = z.object({
+  name: z.string().min(1, "Package name is required").optional(),
+  description: z.string().optional(),
+  price: z.number().min(0, "Price must be positive").optional(),
+  duration: z.number().min(1, "Duration must be at least 1 day").optional(),
+  isActive: z.boolean().optional(),
+  serviceIds: z.array(z.string()).min(1, "At least one service is required").optional(),
+});
+
+
+
 export type RegisterUserInput = z.infer<typeof RegisterUserSchema>;
 export type RegisterDealerInput = z.infer<typeof RegisterDealerSchema>;
 export type LoginInput = z.infer<typeof LoginSchema>;
 export type UpdateUserProfileInput = z.infer<typeof UpdateUserProfileSchema>;
 export type UpdateDealerProfileInput = z.infer<typeof UpdateDealerProfileSchema>;
 export type RefreshTokenInput = z.infer<typeof RefreshTokenSchema>;
+
+export type CreateServiceInput = z.infer<typeof CreateServiceSchema>;
+export type UpdateServiceInput = z.infer<typeof UpdateServiceSchema>;
+export type CreatePackageInput = z.infer<typeof CreatePackageSchema>;
+export type UpdatePackageInput = z.infer<typeof UpdatePackageSchema>;
