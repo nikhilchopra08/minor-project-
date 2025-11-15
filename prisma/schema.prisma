@@ -34,6 +34,9 @@ model User {
 
   services Service[]
   packages Package[]
+
+  @@index([createdAt])
+  @@index([role])
 }
 
 model UserProfile {
@@ -91,6 +94,9 @@ model Service {
   packages PackageService[]
 
   @@map("services")
+  @@index([createdAt])
+  @@index([dealerId])
+  @@index([isActive])
 }
 
 model Package {
@@ -108,6 +114,9 @@ model Package {
   services PackageService[]
 
   @@map("packages")
+  @@index([createdAt])
+  @@index([dealerId])
+  @@index([isActive])
 }
 
 model PackageService {
