@@ -1,76 +1,57 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/../lib/prisma';
-import { authMiddleware, roleMiddleware } from '@/../lib/middleware';
-import { UpdatePackageSchema } from '@/../lib/schemas';
+import { prisma } from '@/lib/prisma';
+import { authMiddleware, roleMiddleware } from '@/lib/middleware';
+import { UpdatePackageSchema } from '@/lib/schemas';
 
-interface Context {
-  params: {
-    id: string;
-  };
-}
-
-export async function PUT(req: NextRequest, context: Context) {
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const user = await authMiddleware(req);
-    
+
     if (!user) {
       return NextResponse.json(
-        {
-          success: false,
-          message: 'Unauthorized',
-        },
+        { success: false, message: 'Unauthorized' },
         { status: 401 }
       );
     }
 
     if (!roleMiddleware(['DEALER'])(user)) {
       return NextResponse.json(
-        {
-          success: false,
-          message: 'Forbidden',
-        },
+        { success: false, message: 'Forbidden' },
         { status: 403 }
       );
     }
 
-    const { id } = context.params;
+    // Await params before accessing id
+    const { id } = await params;
+
     const body = await req.json();
     const parsedData = UpdatePackageSchema.safeParse(body);
 
     if (!parsedData.success) {
       return NextResponse.json(
-        {
-          success: false,
-          message: 'Invalid input',
-        },
+        { success: false, message: 'Invalid input' },
         { status: 400 }
       );
     }
 
-    // Check if package exists and belongs to dealer
     const existingPackage = await prisma.package.findFirst({
-      where: {
-        id,
-        dealerId: user.id,
-      },
+      where: { id, dealerId: user.id },
     });
 
     if (!existingPackage) {
       return NextResponse.json(
-        {
-          success: false,
-          message: 'Package not found or access denied',
-        },
+        { success: false, message: 'Package not found or access denied' },
         { status: 404 }
       );
     }
 
     const { serviceIds, ...packageData } = parsedData.data;
-
     let updateData: any = { ...packageData };
 
     if (serviceIds) {
-      // Verify all services belong to the dealer
       const services = await prisma.service.findMany({
         where: {
           id: { in: serviceIds },
@@ -88,12 +69,9 @@ export async function PUT(req: NextRequest, context: Context) {
         );
       }
 
-      // Update package services
       updateData.services = {
-        deleteMany: {}, // Remove existing services
-        create: serviceIds.map(serviceId => ({
-          serviceId: serviceId,
-        })),
+        deleteMany: {},
+        create: serviceIds.map((serviceId) => ({ serviceId })),
       };
     }
 
@@ -101,11 +79,7 @@ export async function PUT(req: NextRequest, context: Context) {
       where: { id },
       data: updateData,
       include: {
-        services: {
-          include: {
-            service: true,
-          },
-        },
+        services: { include: { service: true } },
       },
     });
 
@@ -117,10 +91,7 @@ export async function PUT(req: NextRequest, context: Context) {
   } catch (error) {
     console.error('Update package error:', error);
     return NextResponse.json(
-      {
-        success: false,
-        message: 'Internal server error',
-      },
+      { success: false, message: 'Internal server error' },
       { status: 500 }
     );
   }

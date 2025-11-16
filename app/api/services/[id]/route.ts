@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 interface Context {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(req: NextRequest, context: Context) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
 
     const service = await prisma.service.findUnique({
       where: { id },
