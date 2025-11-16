@@ -33,7 +33,7 @@ export async function PUT(req: NextRequest, context: Context) {
       );
     }
 
-    const { id } = context.params;
+    const { id } = await context.params;
     const body = await req.json();
     const parsedData = UpdateServiceSchema.safeParse(body);
 
@@ -111,7 +111,7 @@ export async function DELETE(req: NextRequest, context: Context) {
       );
     }
 
-    const { id } = context.params;
+    const { id } = await context.params;
 
     // Check if service exists and belongs to dealer
     const existingService = await prisma.service.findFirst({
