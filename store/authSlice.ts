@@ -1,16 +1,33 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AuthState, LoginFormData } from '@/types/auth';
 
-const initialState: AuthState = {
-  user: null,
-  isLoading: false,
-  error: null,
-  isAuthenticated: false,
+// Check if we're in browser environment and get stored tokens
+const getInitialState = (): AuthState => {
+  if (typeof window !== 'undefined') {
+    const storedUser = localStorage.getItem('user');
+    const accessToken = localStorage.getItem('accessToken');
+    
+    if (storedUser && accessToken) {
+      return {
+        user: JSON.parse(storedUser),
+        isLoading: false,
+        error: null,
+        isAuthenticated: true,
+      };
+    }
+  }
+  
+  return {
+    user: null,
+    isLoading: false,
+    error: null,
+    isAuthenticated: false,
+  };
 };
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState,
+  initialState: getInitialState(),
   reducers: {
     loginStart: (state) => {
       state.isLoading = true;
@@ -29,12 +46,27 @@ const authSlice = createSlice({
       state.user = null;
     },
     logout: (state) => {
+      // Clear localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+      }
+      
       state.user = null;
       state.isAuthenticated = false;
       state.error = null;
     },
     clearError: (state) => {
       state.error = null;
+    },
+    updateTokens: (state, action: PayloadAction<{ accessToken: string; refreshToken?: string }>) => {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('accessToken', action.payload.accessToken);
+        if (action.payload.refreshToken) {
+          localStorage.setItem('refreshToken', action.payload.refreshToken);
+        }
+      }
     },
   },
 });
@@ -45,6 +77,7 @@ export const {
   loginFailure,
   logout,
   clearError,
+  updateTokens,
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -55,13 +55,24 @@ const LoginForm: React.FC = () => {
         throw new Error(result.message);
       }
 
-      dispatch(loginSuccess(result.data.user));
+      // Store tokens in localStorage
+      const { accessToken, refreshToken, user } = result.data;
+      
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('user', JSON.stringify(user));
+
+      console.log(accessToken);
+
+      // Update Redux state
+      dispatch(loginSuccess(user));
+      
+      // Redirect to dashboard
       router.push('/dashboard');
     } catch (error) {
       dispatch(loginFailure(error instanceof Error ? error.message : 'Login failed'));
     }
   };
-
   return (
     <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
