@@ -98,6 +98,62 @@ export const AdminQuerySchema = z.object({
   endDate: z.string().optional(),
 });
 
+// Quote Request Schemas
+export const QuoteRequestSchema = z.object({
+  location: z.string().min(1, "Location is required"),
+  currentSetup: z.string().optional(),
+  powerUsage: z.string().min(1, "Power usage information is required"),
+  renovationType: z.enum([
+    'PANEL_CLEANING',
+    'INVERTER_UPGRADE', 
+    'EFFICIENCY_IMPROVEMENT',
+    'WIRING_SAFETY_UPGRADE',
+    'PANEL_REPLACEMENT',
+    'SOLAR_MIGRATION',
+    'COMPLETE_RENOVATION',
+    'CUSTOM'
+  ]),
+  description: z.string().optional(),
+  images: z.array(z.string().url()).optional(),
+  dealerId: z.string().uuid("Invalid dealer ID"),
+});
+
+export const QuoteResponseSchema = z.object({
+  proposedServices: z.string().min(1, "Proposed services description is required"),
+  totalAmount: z.number().min(0, "Total amount must be positive"),
+  breakdown: z.array(z.object({
+    service: z.string().min(1, "Service name is required"),
+    description: z.string().optional(),
+    amount: z.number().min(0, "Service amount must be positive"),
+    duration: z.number().min(1, "Duration must be at least 1 hour").optional(),
+  })).min(1, "At least one service breakdown is required"),
+  timeline: z.string().min(1, "Timeline estimate is required"),
+  warranty: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+export const QuoteRevisionSchema = z.object({
+  proposedServices: z.string().min(1, "Proposed services description is required").optional(),
+  totalAmount: z.number().min(0, "Total amount must be positive").optional(),
+  breakdown: z.array(z.object({
+    service: z.string().min(1, "Service name is required"),
+    description: z.string().optional(),
+    amount: z.number().min(0, "Service amount must be positive"),
+    duration: z.number().min(1, "Duration must be at least 1 hour").optional(),
+  })).min(1, "At least one service breakdown is required").optional(),
+  timeline: z.string().min(1, "Timeline estimate is required").optional(),
+  warranty: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+export const QuoteQuerySchema = z.object({
+  page: z.string().optional().default("1").transform(Number),
+  limit: z.string().optional().default("10").transform(Number),
+  status: z.enum(['PENDING', 'RESPONDED', 'REVISED', 'ACCEPTED', 'REJECTED', 'EXPIRED']).optional(),
+});
+
+
+
 export type RegisterUserInput = z.infer<typeof RegisterUserSchema>;
 export type RegisterDealerInput = z.infer<typeof RegisterDealerSchema>;
 export type LoginInput = z.infer<typeof LoginSchema>;
@@ -111,3 +167,8 @@ export type CreatePackageInput = z.infer<typeof CreatePackageSchema>;
 export type UpdatePackageInput = z.infer<typeof UpdatePackageSchema>;
 
 export type AdminQueryInput = z.infer<typeof AdminQuerySchema>;
+
+export type QuoteRequestInput = z.infer<typeof QuoteRequestSchema>;
+export type QuoteResponseInput = z.infer<typeof QuoteResponseSchema>;
+export type QuoteRevisionInput = z.infer<typeof QuoteRevisionSchema>;
+export type QuoteQueryInput = z.infer<typeof QuoteQuerySchema>;
