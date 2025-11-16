@@ -19,6 +19,27 @@ enum Role {
   ADMIN
 }
 
+enum QuoteStatus {
+  PENDING
+  RESPONDED
+  REVISED
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+enum RenovationType {
+  PANEL_CLEANING
+  INVERTER_UPGRADE
+  EFFICIENCY_IMPROVEMENT
+  WIRING_SAFETY_UPGRADE
+  PANEL_REPLACEMENT
+  SOLAR_MIGRATION
+  COMPLETE_RENOVATION
+  CUSTOM
+}
+
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
@@ -34,6 +55,9 @@ model User {
 
   services Service[]
   packages Package[]
+
+  quotesAsUser   Quote[] @relation("UserQuotes")
+  quotesAsDealer Quote[] @relation("DealerQuotes")
 
   @@index([createdAt])
   @@index([role])
@@ -129,4 +153,43 @@ model PackageService {
 
   @@unique([packageId, serviceId])
   @@map("package_services")
+}
+
+model Quote {
+  id            String         @id @default(uuid())
+  userId        String
+  dealerId      String
+  status        QuoteStatus    @default(PENDING)
+  
+  // User requirements
+  location      String
+  currentSetup  String?
+  powerUsage    String
+  renovationType RenovationType
+  description   String?
+  images        String[]       // URLs to uploaded images
+  
+  // Dealer response
+  proposedServices String?     // Description of proposed services
+  totalAmount     Float?
+  breakdown       Json?        // JSON array of service breakdown
+  timeline        String?      // Estimated timeline
+  warranty        String?      // Warranty information
+  notes           String?      // Additional notes
+  
+  // Revision history
+  revisions       Json?        // Array of revision history
+  
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  expiresAt       DateTime?    // Quote expiration date
+
+  user            User         @relation("UserQuotes", fields: [userId], references: [id], onDelete: Cascade)
+  dealer          User         @relation("DealerQuotes", fields: [dealerId], references: [id], onDelete: Cascade)
+
+  @@map("quotes")
+  @@index([userId])
+  @@index([dealerId])
+  @@index([status])
+  @@index([createdAt])
 }
