@@ -153,6 +153,43 @@ export const QuoteQuerySchema = z.object({
 });
 
 
+// Booking Schemas
+export const CreateBookingSchema = z.object({
+  quoteId: z.string().uuid("Invalid quote ID"),
+  scheduledDate: z.string().datetime("Invalid date format"),
+  startTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format (HH:MM)"),
+  estimatedHours: z.number().min(1, "Must be at least 1 hour").max(12, "Cannot exceed 12 hours"),
+  specialNotes: z.string().optional(),
+});
+
+export const UpdateBookingStatusSchema = z.object({
+  status: z.enum(['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'RESCHEDULED']),
+  cancellationReason: z.string().optional(),
+});
+
+export const BookingQuerySchema = z.object({
+  page: z.string().optional().default("1").transform(Number),
+  limit: z.string().optional().default("10").transform(Number),
+  status: z.enum(['SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'RESCHEDULED']).optional(),
+  month: z.string().optional(), // Format: "2024-01"
+  year: z.string().optional(),
+});
+
+// Availability Schemas
+export const CreateAvailabilitySchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (YYYY-MM-DD)"),
+  startTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format (HH:MM)"),
+  endTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format (HH:MM)"),
+  slotDuration: z.number().min(30).max(240).default(60), // 30min to 4 hours
+  maxBookings: z.number().min(1).max(10).default(1),
+});
+
+export const AvailabilityQuerySchema = z.object({
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
+  dealerId: z.string().uuid().optional(),
+});
+
 
 export type RegisterUserInput = z.infer<typeof RegisterUserSchema>;
 export type RegisterDealerInput = z.infer<typeof RegisterDealerSchema>;
@@ -172,3 +209,9 @@ export type QuoteRequestInput = z.infer<typeof QuoteRequestSchema>;
 export type QuoteResponseInput = z.infer<typeof QuoteResponseSchema>;
 export type QuoteRevisionInput = z.infer<typeof QuoteRevisionSchema>;
 export type QuoteQueryInput = z.infer<typeof QuoteQuerySchema>;
+
+export type CreateBookingInput = z.infer<typeof CreateBookingSchema>;
+export type UpdateBookingStatusInput = z.infer<typeof UpdateBookingStatusSchema>;
+export type BookingQueryInput = z.infer<typeof BookingQuerySchema>;
+export type CreateAvailabilityInput = z.infer<typeof CreateAvailabilitySchema>;
+export type AvailabilityQueryInput = z.infer<typeof AvailabilityQuerySchema>;

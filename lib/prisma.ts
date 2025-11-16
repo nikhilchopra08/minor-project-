@@ -956,6 +956,364 @@ export class DatabaseService {
       acceptanceRate: total > 0 ? (accepted / total) * 100 : 0,
     };
   }
+
+   static async createBooking(bookingData: {
+    quoteId: string;
+    userId: string;
+    dealerId: string;
+    scheduledDate: Date;
+    startTime: string;
+    estimatedHours: number;
+    services: any[];
+    totalAmount: number;
+    specialNotes?: string;
+  }) {
+    return await prisma.booking.create({
+      data: {
+        ...bookingData,
+        endTime: this.calculateEndTime(bookingData.startTime, bookingData.estimatedHours),
+      },
+      include: {
+        user: {
+          include: {
+            userProfile: {
+              select: {
+                fullName: true,
+                phone: true,
+                address: true,
+                city: true,
+                state: true,
+              },
+            },
+          },
+        },
+        dealer: {
+          include: {
+            dealerProfile: {
+              select: {
+                businessName: true,
+                phone: true,
+                address: true,
+              },
+            },
+          },
+        },
+        quote: {
+          select: {
+            renovationType: true,
+            description: true,
+          },
+        },
+      },
+    });
+  }
+
+  static async findBookingById(id: string) {
+    return await prisma.booking.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: {
+            email: true,
+            userProfile: {
+              select: {
+                fullName: true,
+                phone: true,
+                address: true,
+                city: true,
+                state: true,
+              },
+            },
+          },
+        },
+        dealer: {
+          include: {
+            dealerProfile: {
+              select: {
+                businessName: true,
+                businessEmail: true,
+                phone: true,
+                address: true,
+              },
+            },
+          },
+        },
+        quote: true,
+      },
+    });
+  }
+
+  static async findUserBookings(userId: string, query: any = {}) {
+    const { page = 1, limit = 10, status, month, year } = query;
+    const skip = (page - 1) * limit;
+
+    const where: any = { userId };
+    if (status) where.status = status;
+    
+    if (month && year) {
+      const startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+      const endDate = new Date(parseInt(year), parseInt(month), 0);
+      where.scheduledDate = {
+        gte: startDate,
+        lte: endDate,
+      };
+    }
+
+    const [bookings, totalCount] = await Promise.all([
+      prisma.booking.findMany({
+        where,
+        include: {
+          dealer: {
+            include: {
+              dealerProfile: {
+                select: {
+                  businessName: true,
+                  city: true,
+                  state: true,
+                  phone: true,
+                },
+              },
+            },
+          },
+          quote: {
+            select: {
+              renovationType: true,
+            },
+          },
+        },
+        skip,
+        take: limit,
+        orderBy: { scheduledDate: 'asc' },
+      }),
+      prisma.booking.count({ where }),
+    ]);
+
+    return {
+      bookings,
+      totalCount,
+      page,
+      limit,
+      totalPages: Math.ceil(totalCount / limit),
+    };
+  }
+
+  static async findDealerBookings(dealerId: string, query: any = {}) {
+    const { page = 1, limit = 10, status, month, year } = query;
+    const skip = (page - 1) * limit;
+
+    const where: any = { dealerId };
+    if (status) where.status = status;
+    
+    if (month && year) {
+      const startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+      const endDate = new Date(parseInt(year), parseInt(month), 0);
+      where.scheduledDate = {
+        gte: startDate,
+        lte: endDate,
+      };
+    }
+
+    const [bookings, totalCount] = await Promise.all([
+      prisma.booking.findMany({
+        where,
+        include: {
+          user: {
+            include: {
+              userProfile: {
+                select: {
+                  fullName: true,
+                  phone: true,
+                  address: true,
+                  city: true,
+                  state: true,
+                },
+              },
+            },
+          },
+          quote: {
+            select: {
+              renovationType: true,
+              description: true,
+            },
+          },
+        },
+        skip,
+        take: limit,
+        orderBy: { scheduledDate: 'asc' },
+      }),
+      prisma.booking.count({ where }),
+    ]);
+
+    return {
+      bookings,
+      totalCount,
+      page,
+      limit,
+      totalPages: Math.ceil(totalCount / limit),
+    };
+  }
+
+  static async updateBookingStatus(id: string, status: string, cancellationReason?: string) {
+    const updateData: any = { status };
+    
+    if (status === 'COMPLETED') {
+      updateData.completedAt = new Date();
+    } else if (status === 'CANCELLED') {
+      updateData.cancelledAt = new Date();
+      updateData.cancellationReason = cancellationReason;
+    }
+
+    return await prisma.booking.update({
+      where: { id },
+      data: updateData,
+      include: {
+        user: {
+          select: {
+            email: true,
+            userProfile: {
+              select: {
+                fullName: true,
+                phone: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  // Availability methods
+  static async createDealerAvailability(availabilityData: {
+    dealerId: string;
+    date: Date;
+    startTime: string;
+    endTime: string;
+    slotDuration: number;
+    maxBookings: number;
+  }) {
+    return await prisma.dealerAvailability.create({
+      data: availabilityData,
+    });
+  }
+
+  static async getDealerAvailability(dealerId: string, startDate: Date, endDate: Date) {
+    return await prisma.dealerAvailability.findMany({
+      where: {
+        dealerId,
+        date: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+      orderBy: {
+        date: 'asc',
+      },
+    });
+  }
+
+  static async checkSlotAvailability(dealerId: string, date: Date, startTime: string, duration: number) {
+    const availability = await prisma.dealerAvailability.findFirst({
+      where: {
+        dealerId,
+        date,
+        status: 'AVAILABLE',
+        startTime: { lte: startTime },
+        endTime: { gte: this.calculateEndTime(startTime, duration) },
+      },
+    });
+
+    if (!availability) return false;
+
+    // Check if slot is not fully booked
+    const existingBookings = await prisma.booking.count({
+      where: {
+        dealerId,
+        scheduledDate: date,
+        status: {
+          in: ['SCHEDULED', 'IN_PROGRESS', 'RESCHEDULED'],
+        },
+      },
+    });
+
+    return existingBookings < availability.maxBookings;
+  }
+
+  static async getAvailableSlots(dealerId: string, date: Date) {
+    const availability = await prisma.dealerAvailability.findFirst({
+      where: {
+        dealerId,
+        date,
+        status: 'AVAILABLE',
+      },
+    });
+
+    if (!availability) return [];
+
+    const slots = [];
+    const start = new Date(`${availability.date.toDateString()} ${availability.startTime}`);
+    const end = new Date(`${availability.date.toDateString()} ${availability.endTime}`);
+    
+    let current = new Date(start);
+    
+    while (current < end) {
+      const slotEnd = new Date(current.getTime() + availability.slotDuration * 60000);
+      
+      if (slotEnd <= end) {
+        slots.push({
+          startTime: current.toTimeString().slice(0, 5),
+          endTime: slotEnd.toTimeString().slice(0, 5),
+          available: true,
+        });
+      }
+      
+      current = slotEnd;
+    }
+
+    return slots;
+  }
+
+  // Helper methods
+  private static calculateEndTime(startTime: string, hours: number): string {
+    const [hoursStr, minutesStr] = startTime.split(':');
+    let totalHours = parseInt(hoursStr) + hours;
+    let endHours = totalHours % 24;
+    return `${endHours.toString().padStart(2, '0')}:${minutesStr}`;
+  }
+
+  static async getBookingStats(dealerId?: string) {
+    const where = dealerId ? { dealerId } : {};
+
+    const [
+      total,
+      scheduled,
+      inProgress,
+      completed,
+      cancelled,
+    ] = await Promise.all([
+      prisma.booking.count({ where }),
+      prisma.booking.count({ where: { ...where, status: 'SCHEDULED' } }),
+      prisma.booking.count({ where: { ...where, status: 'IN_PROGRESS' } }),
+      prisma.booking.count({ where: { ...where, status: 'COMPLETED' } }),
+      prisma.booking.count({ where: { ...where, status: 'CANCELLED' } }),
+    ]);
+
+    const revenue = await prisma.booking.aggregate({
+      where: { ...where, status: 'COMPLETED' },
+      _sum: {
+        totalAmount: true,
+      },
+    });
+
+    return {
+      total,
+      scheduled,
+      inProgress,
+      completed,
+      cancelled,
+      totalRevenue: revenue._sum.totalAmount || 0,
+      completionRate: total > 0 ? (completed / total) * 100 : 0,
+    };
+  }
 }
 
 // Transaction helper

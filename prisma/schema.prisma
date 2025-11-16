@@ -39,6 +39,19 @@ enum RenovationType {
   CUSTOM
 }
 
+enum BookingStatus {
+  SCHEDULED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  RESCHEDULED
+}
+
+enum SlotStatus {
+  AVAILABLE
+  BOOKED
+  BLOCKED
+}
 
 model User {
   id        String   @id @default(uuid())
@@ -56,8 +69,16 @@ model User {
   services Service[]
   packages Package[]
 
-  quotesAsUser   Quote[] @relation("UserQuotes")
-  quotesAsDealer Quote[] @relation("DealerQuotes")
+  // Quote relations with explicit names
+  quotesAsUser   Quote[]    @relation("UserQuotes")
+  quotesAsDealer Quote[]    @relation("DealerQuotes")
+  
+  // Booking relations with explicit names
+  bookingsAsUser   Booking[] @relation("UserBookings")
+  bookingsAsDealer Booking[] @relation("DealerBookings")
+  
+  // Availability relation
+  availabilitySlots DealerAvailability[]
 
   @@index([createdAt])
   @@index([role])
@@ -99,8 +120,6 @@ model RefreshToken {
 
   user User @relation(fields: [userId], references: [id])
 }
-
-// Add to your existing schema.prisma
 
 model Service {
   id          String   @id @default(uuid())
@@ -186,10 +205,71 @@ model Quote {
 
   user            User         @relation("UserQuotes", fields: [userId], references: [id], onDelete: Cascade)
   dealer          User         @relation("DealerQuotes", fields: [dealerId], references: [id], onDelete: Cascade)
+  booking         Booking?
 
   @@map("quotes")
   @@index([userId])
   @@index([dealerId])
   @@index([status])
   @@index([createdAt])
+}
+
+model Booking {
+  id              String        @id @default(uuid())
+  quoteId         String        @unique
+  userId          String
+  dealerId        String
+  status          BookingStatus @default(SCHEDULED)
+  
+  // Scheduling
+  scheduledDate   DateTime
+  estimatedHours  Int
+  startTime       String
+  endTime         String
+  
+  // Service details
+  services        Json         // Array of services from quote breakdown
+  totalAmount     Float
+  specialNotes    String?
+  
+  // Tracking
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  completedAt     DateTime?
+  cancelledAt     DateTime?
+  cancellationReason String?
+
+  // Relations with explicit names
+  user            User         @relation("UserBookings", fields: [userId], references: [id], onDelete: Cascade)
+  dealer          User         @relation("DealerBookings", fields: [dealerId], references: [id], onDelete: Cascade)
+  quote           Quote        @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  @@map("bookings")
+  @@index([userId])
+  @@index([dealerId])
+  @@index([scheduledDate])
+  @@index([status])
+}
+
+model DealerAvailability {
+  id              String      @id @default(uuid())
+  dealerId        String
+  date            DateTime    // Date without time
+  startTime       String      // Format: "09:00"
+  endTime         String      // Format: "17:00"
+  slotDuration    Int         @default(60) // in minutes
+  status          SlotStatus  @default(AVAILABLE)
+  maxBookings     Int         @default(1)
+  currentBookings Int         @default(0)
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  dealer          User        @relation(fields: [dealerId], references: [id], onDelete: Cascade)
+
+  @@map("dealer_availabilities")
+  @@unique([dealerId, date])
+  @@index([dealerId])
+  @@index([date])
+  @@index([status])
 }
