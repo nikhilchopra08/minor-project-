@@ -36,9 +36,9 @@ export const LoginSchema = z.object({
 });
 
 export const UpdateUserProfileSchema = z.object({
-  fullName: z.string().min(2, 'Full name must be at least 2 characters'),
-  phone: z.string().min(10, 'Phone number must be at least 10 characters'),
-  city: z.string().min(2, 'City must be at least 2 characters'),
-  state: z.string().min(2, 'State must be at least 2 characters'),
-  address: z.string().min(5, 'Address must be at least 5 characters'),
+  fullName: z.string().min(2, 'Full name must be at least 2 characters').optional(),
+  phone: z.string().min(10, 'Phone number must be at least 10 characters').optional(),
+  address: z.string().min(5, 'Address must be at least 5 characters').optional(),
+  city: z.string().min(2, 'City must be at least 2 characters').optional(),
+  state: z.string().min(2, 'State must be at least 2 characters').optional(),
 });

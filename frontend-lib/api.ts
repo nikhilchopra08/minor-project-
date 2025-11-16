@@ -42,10 +42,10 @@ class ApiClient {
   private async getAuthHeaders(): Promise<HeadersInit> {
     let accessToken = getStoredTokens().accessToken;
 
-    // Check if access token is expired and refresh if needed
-    if (accessToken && !isTokenValid(accessToken)) {
-      accessToken = await this.refreshToken();
-    }
+    // // Check if access token is expired and refresh if needed
+    // if (accessToken && !isTokenValid(accessToken)) {
+    //   accessToken = await this.refreshToken();
+    // }
 
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
