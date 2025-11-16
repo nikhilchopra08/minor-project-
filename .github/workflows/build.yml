@@ -1,6 +1,9 @@
 name : Build Suceed on PR
 
 on:
+  push:        # runs on every push to origin
+    branches:
+      -master  
   pull_request:
     branches:
       -master
