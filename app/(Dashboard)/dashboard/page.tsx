@@ -7,15 +7,19 @@ import { apiClient } from '@/frontend-lib/api';
 import DashboardHeader from '@/components/DashboardHeader';
 import ProfileCard from '@/components/ProfileCard';
 import RawResponseCard from '@/components/RawResponseCard';
+import EditProfileModal from '@/components/EditProfileModal';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { ProfileApiResponse } from '@/types/dashboard';
+import { ProfileApiResponse, UpdateProfileData } from '@/types/dashboard';
 
 const DashboardPage: React.FC = () => {
   const router = useRouter();
   const { isAuthenticated, user } = useAppSelector((state) => state.auth);
   const [profileData, setProfileData] = useState<ProfileApiResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     // Redirect if not authenticated
@@ -48,8 +52,46 @@ const DashboardPage: React.FC = () => {
     }
   };
 
+  const handleUpdateProfile = async (updateData: UpdateProfileData) => {
+    try {
+      setIsUpdating(true);
+      setError(null);
+      setSuccessMessage(null);
+
+      const response = await apiClient.put('/api/user/profile', updateData);
+      const data: ProfileApiResponse = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message);
+      }
+
+      setProfileData(data);
+      setSuccessMessage('Profile updated successfully!');
+      setIsEditModalOpen(false);
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+      setError(error instanceof Error ? error.message : 'Failed to update profile');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   const handleRefresh = () => {
     fetchProfileData();
+  };
+
+  const handleEditClick = () => {
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsEditModalOpen(false);
+    setError(null);
   };
 
   if (!isAuthenticated) {
@@ -72,7 +114,7 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Refresh Button */}
-        <div className="mb-6">
+        {/* <div className="mb-6">
           <button
             onClick={handleRefresh}
             disabled={isLoading}
@@ -93,7 +135,29 @@ const DashboardPage: React.FC = () => {
             </svg>
             {isLoading ? 'Refreshing...' : 'Refresh Data'}
           </button>
-        </div>
+        </div> */}
+
+        {/* Success Message */}
+        {successMessage && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div className="flex items-center">
+              <svg
+                className="w-5 h-5 text-green-400 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <p className="text-green-600">{successMessage}</p>
+            </div>
+          </div>
+        )}
 
         {/* Error Message */}
         {error && (
@@ -125,7 +189,11 @@ const DashboardPage: React.FC = () => {
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
             {/* Profile Card */}
             <div>
-              <ProfileCard userData={profileData.data} />
+              <ProfileCard 
+                userData={profileData.data} 
+                onEdit={handleEditClick}
+                isUpdating={isUpdating}
+              />
             </div>
 
             {/* Raw API Response */}
@@ -227,6 +295,17 @@ const DashboardPage: React.FC = () => {
           </div>
         )}
       </main>
+
+      {/* Edit Profile Modal */}
+      {profileData && (
+        <EditProfileModal
+          isOpen={isEditModalOpen}
+          onClose={handleCloseModal}
+          onSave={handleUpdateProfile}
+          userData={profileData.data}
+          isLoading={isUpdating}
+        />
+      )}
     </div>
   );
 };

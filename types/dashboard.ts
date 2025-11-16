@@ -21,3 +21,11 @@ export interface ProfileApiResponse {
   message: string;
   data: UserData;
 }
+
+export interface UpdateProfileData {
+  fullName?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+}
