@@ -30,49 +30,33 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { quoteId, scheduledDate, startTime, estimatedHours, specialNotes } = parsedData.data;
+    const { serviceId, scheduledDate, startTime, estimatedHours, specialNotes, location, contactPhone, contactEmail } = parsedData.data;
 
-    // Verify quote exists and is accepted
-    const quote = await prisma.quote.findFirst({
+    // Verify service exists and is active
+    const service = await prisma.service.findFirst({
       where: {
-        id: quoteId,
-        userId: user.id,
-        status: 'ACCEPTED',
+        id: serviceId,
+        isActive: true,
       },
       include: {
         dealer: true,
       },
     });
 
-    if (!quote) {
+    if (!service) {
       return NextResponse.json(
         {
           success: false,
-          message: 'Quote not found, not accepted, or access denied',
+          message: 'Service not found or not available',
         },
         { status: 404 }
-      );
-    }
-
-    // Check if booking already exists for this quote
-    const existingBooking = await prisma.booking.findUnique({
-      where: { quoteId },
-    });
-
-    if (existingBooking) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: 'Booking already exists for this quote',
-        },
-        { status: 409 }
       );
     }
 
     // Check dealer availability
     const isAvailable = await prisma.dealerAvailability.findFirst({
       where: {
-        dealerId: quote.dealerId,
+        dealerId: service.dealerId,
         date: new Date(scheduledDate),
         status: 'AVAILABLE',
         startTime: { lte: startTime },
@@ -93,7 +77,7 @@ export async function POST(req: NextRequest) {
     // Check for overlapping bookings
     const overlappingBooking = await prisma.booking.findFirst({
       where: {
-        dealerId: quote.dealerId,
+        dealerId: service.dealerId,
         scheduledDate: new Date(scheduledDate),
         status: {
           in: ['SCHEDULED', 'IN_PROGRESS', 'RESCHEDULED'],
@@ -121,40 +105,55 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Create booking
-    const booking = await prisma.booking.create({
-      data: {
-        quoteId,
-        userId: user.id,
-        dealerId: quote.dealerId,
-        scheduledDate: new Date(scheduledDate),
-        startTime,
-        estimatedHours,
-        endTime: calculateEndTime(startTime, estimatedHours),
-        services: quote.breakdown || [],
-        totalAmount: quote.totalAmount || 0,
-        specialNotes,
+    // Create booking - FIXED: Use correct field names from your Prisma schema
+const booking = await prisma.booking.create({
+  data: {
+    serviceId: service.id,
+    quoteId: crypto.randomUUID(), // or your actual quote ID
+    userId: user.id,
+    dealerId: service.dealerId,
+
+    scheduledDate: new Date(scheduledDate),
+    startTime,
+    estimatedHours,
+    endTime: calculateEndTime(startTime, estimatedHours),
+
+    // Must be valid JSON (your schema says Json)
+    services: [
+      {
+        id: service.id,
+        name: service.name,
+        price: service.price,
+        category: service.category,
+        duration: service.duration,
       },
+    ],
+
+    totalAmount: service.price ?? 0,
+    specialNotes: specialNotes || "",
+
+    location: location || "",
+    contactPhone: contactPhone || "",
+    contactEmail: contactEmail || "",
+
+    status: "SCHEDULED",
+  },
+  include: {
+    dealer: {
       include: {
-        dealer: {
-          include: {
-            dealerProfile: {
-              select: {
-                businessName: true,
-                phone: true,
-                address: true,
-              },
-            },
-          },
-        },
-        quote: {
+        dealerProfile: {
           select: {
-            renovationType: true,
-            description: true,
+            businessName: true,
+            phone: true,
+            address: true,
           },
         },
       },
-    });
+    },
+    quote: true, // you have this relation
+  },
+});
+
 
     return NextResponse.json(
       {

@@ -216,10 +216,16 @@ model Quote {
 
 model Booking {
   id              String        @id @default(uuid())
+  serviceId       String
   quoteId         String        @unique
   userId          String
   dealerId        String
   status          BookingStatus @default(SCHEDULED)
+
+  location      String?
+  contactPhone  String?
+  contactEmail  String?
+
   
   // Scheduling
   scheduledDate   DateTime

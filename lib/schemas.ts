@@ -154,12 +154,16 @@ export const QuoteQuerySchema = z.object({
 
 
 // Booking Schemas
+// Update CreateBookingSchema to use service instead of quote
 export const CreateBookingSchema = z.object({
-  quoteId: z.string().uuid("Invalid quote ID"),
-  scheduledDate: z.string().datetime("Invalid date format"),
-  startTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format (HH:MM)"),
-  estimatedHours: z.number().min(1, "Must be at least 1 hour").max(12, "Cannot exceed 12 hours"),
+  serviceId: z.string().min(1, "Service ID is required"),
+  scheduledDate: z.string().min(1, "Scheduled date is required"),
+  startTime: z.string().min(1, "Start time is required"),
+  estimatedHours: z.number().min(1, "Estimated hours must be at least 1"),
   specialNotes: z.string().optional(),
+  location: z.string().min(1, "Location is required"),
+  contactPhone: z.string().min(1, "Contact phone is required"),
+  contactEmail: z.string().email("Valid email is required"),
 });
 
 export const UpdateBookingStatusSchema = z.object({
