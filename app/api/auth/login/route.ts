@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '../../../../lib/prisma';
-import { LoginSchema } from '../../../../lib/schemas';
+import { prisma } from '@/lib/prisma';
+import { LoginSchema } from '@/lib/schemas';
 import { compare } from 'bcryptjs';
-import { generateAccessToken, generateRefreshToken } from '../../../../lib/utils';
+import { generateAccessToken, generateRefreshToken } from '@/lib/utils';
 
 export async function POST(req: NextRequest) {
   try {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '../../../../lib/prisma';
-import { RefreshTokenSchema } from '../../../../lib/schemas';
-import { verifyRefreshToken, generateAccessToken, generateRefreshToken } from '../../../../lib/utils';
+import { prisma } from '@/lib/prisma';
+import { RefreshTokenSchema } from '@/lib/schemas';
+import { verifyRefreshToken, generateAccessToken, generateRefreshToken } from '@/lib/utils';
 
 export async function POST(req: NextRequest) {
   try {

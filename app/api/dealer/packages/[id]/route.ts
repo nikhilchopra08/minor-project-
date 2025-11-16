@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '../../../../../lib/prisma';
-import { authMiddleware, roleMiddleware } from '../../../../../lib/middleware';
-import { UpdatePackageSchema } from '../../../../../lib/schemas';
+import { prisma } from '@/../lib/prisma';
+import { authMiddleware, roleMiddleware } from '@/../lib/middleware';
+import { UpdatePackageSchema } from '@/../lib/schemas';
 
 interface Context {
   params: {
