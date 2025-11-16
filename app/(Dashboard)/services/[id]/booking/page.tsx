@@ -141,7 +141,7 @@ export default function ServiceBookingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 py-8">
+      <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
@@ -161,7 +161,7 @@ export default function ServiceBookingPage() {
 
   if (error || !service) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 py-8">
+      <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-red-50 border border-red-200 rounded-2xl p-8 text-center">
             <h2 className="text-2xl font-bold text-red-800 mb-4">Service Not Found</h2>
@@ -179,7 +179,7 @@ export default function ServiceBookingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 py-8">
+    <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">

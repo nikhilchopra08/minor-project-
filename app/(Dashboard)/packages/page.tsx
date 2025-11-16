@@ -165,7 +165,7 @@ export default function PackagesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 py-8">
+    <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
@@ -351,7 +351,7 @@ function PackageCard({ pkg, onViewDetails, onContact, formatPrice, getPriceRange
           <div className="space-y-1">
             {pkg.services.slice(0, 3).map((pkgService, index) => (
               <div key={pkgService.service.id} className="flex items-center text-sm text-gray-600">
-                <Leaf className="h-3 w-3 text-green-500 mr-2 flex-shrink-0" />
+                <Leaf className="h-3 w-3 text-green-500 mr-2 shrink-0" />
                 <span className="truncate">{pkgService.service.name}</span>
               </div>
             ))}

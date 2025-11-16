@@ -95,7 +95,7 @@ export default function PackageDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 py-8">
+      <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
@@ -116,7 +116,7 @@ export default function PackageDetailPage() {
 
   if (error || !pkg) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 py-8">
+      <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-red-50 border border-red-200 rounded-2xl p-8 text-center">
             <h2 className="text-2xl font-bold text-red-800 mb-4">Package Not Found</h2>
@@ -136,7 +136,7 @@ export default function PackageDetailPage() {
   const savings = calculateSavings(pkg.services);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 py-8">
+    <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Back Button */}
         <button
@@ -149,7 +149,7 @@ export default function PackageDetailPage() {
 
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-8 text-white">
+          <div className="bg-linear-to-r from-green-600 to-emerald-600 p-8 text-white">
             <div className="flex items-start justify-between">
               <div>
                 <h1 className="text-3xl font-bold mb-2">{pkg.name}</h1>
@@ -222,7 +222,7 @@ export default function PackageDetailPage() {
                 {/* Savings Calculation */}
                 {savings > 0 && (
                   <section className="mb-8">
-                    <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl p-6 text-white">
+                    <div className="bg-linear-to-r from-green-500 to-emerald-500 rounded-xl p-6 text-white">
                       <h3 className="text-xl font-bold mb-2">Package Savings</h3>
                       <p className="mb-2">
                         Individual services total: <span className="font-semibold line-through">{formatPrice(savings + pkg.price)}</span>

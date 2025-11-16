@@ -9,7 +9,7 @@ export default function QuoteSuccessPage() {
   const quoteId = searchParams.get('quoteId');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 py-8">
+    <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 py-8">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
           {/* Success Icon */}
@@ -40,15 +40,15 @@ export default function QuoteSuccessPage() {
             <h3 className="font-semibold text-green-800 mb-3">What happens next?</h3>
             <ul className="space-y-2 text-green-700">
               <li className="flex items-center">
-                <CheckCircle className="h-4 w-4 mr-2 flex-shrink-0" />
+                <CheckCircle className="h-4 w-4 mr-2 shrink-0" />
                 <span>Our certified dealers will review your requirements</span>
               </li>
               <li className="flex items-center">
-                <Mail className="h-4 w-4 mr-2 flex-shrink-0" />
+                <Mail className="h-4 w-4 mr-2 shrink-0" />
                 <span>You'll receive customized quotes within 24-48 hours</span>
               </li>
               <li className="flex items-center">
-                <Phone className="h-4 w-4 mr-2 flex-shrink-0" />
+                <Phone className="h-4 w-4 mr-2 shrink-0" />
                 <span>Dealers may contact you for additional details</span>
               </li>
             </ul>
