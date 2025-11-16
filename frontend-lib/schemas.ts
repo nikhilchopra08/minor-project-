@@ -29,3 +29,16 @@ export const RegisterUserSchema = z.object({
   state: z.string().min(2, 'State must be at least 2 characters'),
   address: z.string().min(5, 'Address must be at least 5 characters'),
 });
+
+export const LoginSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(1, 'Password is required'),
+});
+
+export const UpdateUserProfileSchema = z.object({
+  fullName: z.string().min(2, 'Full name must be at least 2 characters'),
+  phone: z.string().min(10, 'Phone number must be at least 10 characters'),
+  city: z.string().min(2, 'City must be at least 2 characters'),
+  state: z.string().min(2, 'State must be at least 2 characters'),
+  address: z.string().min(5, 'Address must be at least 5 characters'),
+});
