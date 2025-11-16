@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { hash, compare } from 'bcryptjs';
+import { RenovationType } from '@prisma/client';
 
 const prismaClientSingleton = () => {
   return new PrismaClient({
@@ -196,9 +197,9 @@ export class DatabaseService {
 
   static async findServicesByCategory(category: string) {
     return await prisma.service.findMany({
-      where: { 
+      where: {
         category,
-        isActive: true 
+        isActive: true
       },
       include: {
         dealer: {
@@ -283,9 +284,9 @@ export class DatabaseService {
 
   static async findPackagesByDealer(dealerId: string) {
     return await prisma.package.findMany({
-      where: { 
+      where: {
         dealerId,
-        isActive: true 
+        isActive: true
       },
       include: {
         services: {
@@ -678,6 +679,282 @@ export class DatabaseService {
         createdAt: 'desc',
       },
     });
+  }
+
+  static async createQuote(quoteData: {
+    userId: string;
+    dealerId: string;
+    location: string;
+    currentSetup?: string;
+    powerUsage: string;
+    renovationType: RenovationType;
+    description?: string;
+    images?: string[];
+  }) {
+    return await prisma.quote.create({
+      data: {
+        ...quoteData,
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+      },
+      include: {
+        user: {
+          include: {
+            userProfile: {
+              select: {
+                fullName: true,
+                phone: true,
+                city: true,
+                state: true,
+              },
+            },
+          },
+        },
+        dealer: {
+          include: {
+            dealerProfile: {
+              select: {
+                businessName: true,
+                businessEmail: true,
+                phone: true,
+                city: true,
+                state: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  static async findQuoteById(id: string) {
+    return await prisma.quote.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: {
+            email: true, // Select email from User model
+            userProfile: {
+              select: {
+                fullName: true,
+                phone: true,
+                city: true,
+                state: true,
+                address: true,
+              },
+            },
+          },
+        },
+        dealer: {
+          include: {
+            dealerProfile: {
+              select: {
+                businessName: true,
+                businessEmail: true,
+                phone: true,
+                city: true,
+                state: true,
+                address: true,
+                description: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  static async findUserQuotes(userId: string, query: any = {}) {
+    const { page = 1, limit = 10, status } = query;
+    const skip = (page - 1) * limit;
+
+    const where: any = { userId };
+    if (status) where.status = status;
+
+    const [quotes, totalCount] = await Promise.all([
+      prisma.quote.findMany({
+        where,
+        include: {
+          dealer: {
+            include: {
+              dealerProfile: {
+                select: {
+                  businessName: true,
+                  city: true,
+                  state: true,
+                },
+              },
+            },
+          },
+        },
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.quote.count({ where }),
+    ]);
+
+    return {
+      quotes,
+      totalCount,
+      page,
+      limit,
+      totalPages: Math.ceil(totalCount / limit),
+    };
+  }
+
+  static async findDealerQuotes(dealerId: string, query: any = {}) {
+    const { page = 1, limit = 10, status } = query;
+    const skip = (page - 1) * limit;
+
+    const where: any = { dealerId };
+    if (status) where.status = status;
+
+    const [quotes, totalCount] = await Promise.all([
+      prisma.quote.findMany({
+        where,
+        include: {
+          user: {
+            include: {
+              userProfile: {
+                select: {
+                  fullName: true,
+                  phone: true,
+                  city: true,
+                  state: true,
+                },
+              },
+            },
+          },
+        },
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.quote.count({ where }),
+    ]);
+
+    return {
+      quotes,
+      totalCount,
+      page,
+      limit,
+      totalPages: Math.ceil(totalCount / limit),
+    };
+  }
+
+  static async respondToQuote(quoteId: string, responseData: any) {
+    return await prisma.quote.update({
+      where: { id: quoteId },
+      data: {
+        ...responseData,
+        status: 'RESPONDED',
+        breakdown: responseData.breakdown || [],
+      },
+      include: {
+        user: {
+          select: {
+            email: true, // Select email from User model
+            userProfile: {
+              select: {
+                fullName: true,
+                phone: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  static async reviseQuote(quoteId: string, revisionData: any, existingQuote: any) {
+    const revisionHistory = Array.isArray(existingQuote.revisions)
+      ? [...existingQuote.revisions]
+      : [];
+
+    // Add current state to revision history before updating
+    revisionHistory.push({
+      timestamp: new Date(),
+      proposedServices: existingQuote.proposedServices,
+      totalAmount: existingQuote.totalAmount,
+      breakdown: existingQuote.breakdown,
+      timeline: existingQuote.timeline,
+      warranty: existingQuote.warranty,
+      notes: existingQuote.notes,
+    });
+
+    return await prisma.quote.update({
+      where: { id: quoteId },
+      data: {
+        ...revisionData,
+        revisions: revisionHistory,
+        status: 'REVISED',
+        breakdown: revisionData.breakdown || existingQuote.breakdown,
+      },
+    });
+  }
+
+  static async acceptQuote(quoteId: string) {
+    return await prisma.quote.update({
+      where: { id: quoteId },
+      data: {
+        status: 'ACCEPTED',
+      },
+    });
+  }
+
+  static async rejectQuote(quoteId: string) {
+    return await prisma.quote.update({
+      where: { id: quoteId },
+      data: {
+        status: 'REJECTED',
+      },
+    });
+  }
+
+  static async expireOldQuotes() {
+    const expiredCount = await prisma.quote.updateMany({
+      where: {
+        status: 'PENDING',
+        expiresAt: {
+          lt: new Date(),
+        },
+      },
+      data: {
+        status: 'EXPIRED',
+      },
+    });
+
+    return expiredCount.count;
+  }
+
+  static async getQuoteStats(dealerId?: string) {
+    const where = dealerId ? { dealerId } : {};
+
+    const [
+      total,
+      pending,
+      responded,
+      accepted,
+      rejected,
+      expired,
+    ] = await Promise.all([
+      prisma.quote.count({ where }),
+      prisma.quote.count({ where: { ...where, status: 'PENDING' } }),
+      prisma.quote.count({ where: { ...where, status: 'RESPONDED' } }),
+      prisma.quote.count({ where: { ...where, status: 'ACCEPTED' } }),
+      prisma.quote.count({ where: { ...where, status: 'REJECTED' } }),
+      prisma.quote.count({ where: { ...where, status: 'EXPIRED' } }),
+    ]);
+
+    return {
+      total,
+      pending,
+      responded,
+      accepted,
+      rejected,
+      expired,
+      acceptanceRate: total > 0 ? (accepted / total) * 100 : 0,
+    };
   }
 }
 
