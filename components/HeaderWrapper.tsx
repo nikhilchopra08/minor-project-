@@ -2,11 +2,14 @@
 
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { useAppSelector } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { logout } from '@/store/authSlice';
+
 import Link from 'next/link';
 
 const HeaderWrapper: React.FC = () => {
   const pathname = usePathname();
+  const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -18,6 +21,11 @@ const HeaderWrapper: React.FC = () => {
   if (!shouldShowHeader) {
     return null;
   }
+
+    const handleLogout = () => {
+      dispatch(logout());
+      window.location.href = '/login';
+    };
 
   // Get role badge based on user role
   const getRoleBadge = (role: string) => {
@@ -45,12 +53,11 @@ const HeaderWrapper: React.FC = () => {
         { href: '/packages', label: 'Packages' },
         { href: '/progress', label: 'Progress' },
       ];
-    } else if (user?.role === 'dealer') {
+    } else if (user?.role === 'DEALER') {
       return [
-        { href: '/dealer/dashboard', label: 'Dashboard' },
-        { href: '/dealer/projects', label: 'Projects' },
-        { href: '/dealer/leads', label: 'Leads' },
-        { href: '/dealer/profile', label: 'Profile' }
+        { href: '/dealer/packages', label: 'Packages' },
+        { href: '/dealer/service', label: 'Services' },
+        { href: '/dealer-availability', label: 'Availabilty' },
       ];
     } else {
       // Default navigation for non-logged in users
@@ -122,18 +129,20 @@ const HeaderWrapper: React.FC = () => {
                       <p className="font-semibold text-gray-800">{user.email}</p>
                     </div>
                     <Link 
-                      href={user.role === 'customer' ? '/profile' : '/dealer/profile'} 
+                      href={user.role === 'customer' ? '/profile' : '/dashboard'} 
                       className="block px-4 py-2 text-gray-700 hover:bg-emerald-50 transition-colors duration-200"
                     >
                       Profile
                     </Link>
-                    <Link 
+                    {/* <Link 
                       href={user.role === 'customer' ? '/dashboard' : '/dealer/dashboard'} 
                       className="block px-4 py-2 text-gray-700 hover:bg-emerald-50 transition-colors duration-200"
                     >
                       Dashboard
-                    </Link>
-                    <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-emerald-50 transition-colors duration-200">
+                    </Link> */}
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-emerald-50 transition-colors duration-200">
                       Logout
                     </button>
                   </div>
@@ -197,19 +206,19 @@ const HeaderWrapper: React.FC = () => {
                   </div>
                 </div>
                 <Link 
-                  href={user.role === 'customer' ? '/profile' : '/dealer/profile'} 
+                  href={user.role === 'customer' ? '/profile' : '/dashboard'} 
                   className="text-white hover:text-emerald-100 block px-5 py-3 rounded-lg text-lg font-semibold transition-colors duration-200" 
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Profile
                 </Link>
-                <Link 
+                {/* <Link 
                   href={user.role === 'customer' ? '/dashboard' : '/dealer/dashboard'} 
                   className="text-white hover:text-emerald-100 block px-5 py-3 rounded-lg text-lg font-semibold transition-colors duration-200" 
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Dashboard
-                </Link>
+                </Link> */}
                 <button className="text-white hover:text-emerald-100 block px-5 py-3 rounded-lg text-lg font-semibold transition-colors duration-200 w-full text-left" onClick={() => setIsMenuOpen(false)}>
                   Logout
                 </button>

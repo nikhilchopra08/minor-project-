@@ -43,8 +43,8 @@ const LoginForm: React.FC = () => {
   }, [dispatch]);
 
   const redirectBasedOnRole = (user: any) => {
-    if (user.role === 'dealer') {
-      router.push('/dealer/dashboard');
+    if (user.role === 'DEALER') {
+      router.push('/dealer/packages');
     } else {
       router.push('/services');
     }
