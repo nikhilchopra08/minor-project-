@@ -61,7 +61,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+      <div className="bg-green-50 rounded-lg shadow-xl w-full max-w-md">
         {/* Header */}
         <div className="bg-green-600 px-6 py-4 rounded-t-lg">
           <h2 className="text-xl font-semibold text-white">Edit Profile</h2>
@@ -161,7 +161,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
               type="button"
               onClick={handleClose}
               disabled={isLoading}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-200 disabled:opacity-50"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-green-50 border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-200 disabled:opacity-50"
             >
               Cancel
             </button>

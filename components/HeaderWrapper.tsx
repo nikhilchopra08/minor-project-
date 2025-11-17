@@ -30,7 +30,7 @@ const HeaderWrapper: React.FC = () => {
   // Get role badge based on user role
   const getRoleBadge = (role: string) => {
     const roleConfig = {
-      customer: { color: 'bg-blue-500', text: 'Customer' },
+      customer: { color: 'bg-green-500', text: 'Customer' },
       dealer: { color: 'bg-emerald-500', text: 'Dealer' },
       admin: { color: 'bg-purple-500', text: 'Admin' }
     };
@@ -79,7 +79,7 @@ const HeaderWrapper: React.FC = () => {
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center">
               <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center">
                   <svg className="w-8 h-8 text-[#708E62]" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
                   </svg>
@@ -116,14 +116,14 @@ const HeaderWrapper: React.FC = () => {
                     </span>
                   </div>
                   <div className="text-left">
-                    <div className="font-semibold">{user.name || 'User'}</div>
-                    <div className="text-sm text-emerald-100">{getRoleBadge(user.role)}</div>
+                    {/* <div className="font-semibold">{user.fullName || 'User'}</div> */}
+                    {/* <div className="text-sm text-emerald-100">{getRoleBadge(user.role)}</div> */}
                   </div>
                 </button>
 
                 {/* Profile Dropdown */}
                 {isProfileOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-emerald-100 py-2 z-50">
+                  <div className="absolute right-0 mt-2 w-48 bg-green-50 rounded-lg shadow-lg border border-emerald-100 py-2 z-50">
                     <div className="px-4 py-2 border-b border-emerald-100">
                       <p className="text-sm text-gray-600">Signed in as</p>
                       <p className="font-semibold text-gray-800">{user.email}</p>
@@ -153,7 +153,7 @@ const HeaderWrapper: React.FC = () => {
                 <Link href="/login" className="text-white hover:text-emerald-100 px-5 py-3 rounded-lg text-lg font-semibold transition-colors duration-200">
                   Login
                 </Link>
-                <Link href="/get-started" className="bg-white hover:bg-emerald-50 text-[#708E62] px-8 py-4 rounded-lg text-lg font-bold transition-colors duration-200 shadow-md hover:shadow-lg">
+                <Link href="/get-started" className="bg-green-50 hover:bg-emerald-50 text-[#708E62] px-8 py-4 rounded-lg text-lg font-bold transition-colors duration-200 shadow-md hover:shadow-lg">
                   Get Started
                 </Link>
               </>
@@ -228,7 +228,7 @@ const HeaderWrapper: React.FC = () => {
                 <Link href="/login" className="text-white hover:text-emerald-100 block px-5 py-4 rounded-lg text-xl font-semibold transition-colors duration-200" onClick={() => setIsMenuOpen(false)}>
                   Login
                 </Link>
-                <Link href="/get-started" className="bg-white hover:bg-emerald-50 text-[#708E62] block px-5 py-4 rounded-lg text-xl font-bold transition-colors duration-200 mx-3 mt-2 text-center shadow-md hover:shadow-lg" onClick={() => setIsMenuOpen(false)}>
+                <Link href="/get-started" className="bg-green-50 hover:bg-emerald-50 text-[#708E62] block px-5 py-4 rounded-lg text-xl font-bold transition-colors duration-200 mx-3 mt-2 text-center shadow-md hover:shadow-lg" onClick={() => setIsMenuOpen(false)}>
                   Get Started
                 </Link>
               </>

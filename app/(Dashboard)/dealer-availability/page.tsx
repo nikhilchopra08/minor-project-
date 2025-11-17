@@ -20,7 +20,7 @@ type ViewMode = 'calendar' | 'bulk';
 
 // UI Components
 const Card = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}>
+  <div className={`bg-green-50 rounded-lg border border-gray-200 shadow-sm ${className}`}>
     {children}
   </div>
 );
@@ -70,7 +70,7 @@ const Button = ({
   
   const variants = {
     default: 'bg-green-600 text-white hover:bg-green-700',
-    outline: 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50',
+    outline: 'border border-gray-300 bg-green-50 text-gray-700 hover:bg-gray-50',
     secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
     destructive: 'bg-red-600 text-white hover:bg-red-700'
   };
@@ -136,7 +136,7 @@ const Switch = ({
       disabled={disabled}
     >
       <span
-        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+        className={`inline-block h-4 w-4 transform rounded-full bg-green-50 transition-transform ${
           checked ? 'translate-x-6' : 'translate-x-1'
         }`}
       />
@@ -670,7 +670,7 @@ export default function DealerAvailabilityPage() {
                           <div
                             key={dateStr}
                             className={`p-2 rounded text-center ${
-                              isWeekendDay ? 'bg-gray-50' : 'bg-white'
+                              isWeekendDay ? 'bg-gray-50' : 'bg-green-50'
                             } border ${
                               existing === true 
                                 ? 'border-green-200 bg-green-50' 

@@ -206,7 +206,7 @@ const DashboardPage: React.FC = () => {
         {/* Stats Cards */}
         {!isLoading && profileData && (
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-lg shadow-lg border border-green-200">
+            <div className="bg-green-50 p-6 rounded-lg shadow-lg border border-green-200">
               <div className="flex items-center">
                 <div className="p-3 bg-green-100 rounded-lg">
                   <svg
@@ -232,7 +232,7 @@ const DashboardPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-lg border border-green-200">
+            <div className="bg-green-50 p-6 rounded-lg shadow-lg border border-green-200">
               <div className="flex items-center">
                 <div className="p-3 bg-green-100 rounded-lg">
                   <svg
@@ -261,7 +261,7 @@ const DashboardPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-lg border border-green-200">
+            <div className="bg-green-50 p-6 rounded-lg shadow-lg border border-green-200">
               <div className="flex items-center">
                 <div className="p-3 bg-purple-100 rounded-lg">
                   <svg

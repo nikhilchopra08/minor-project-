@@ -229,7 +229,7 @@ export default function DealerAvailabilityPage() {
           <div className="flex items-center justify-between max-w-md mx-auto mb-8">
             <button
               onClick={() => navigateMonth('prev')}
-              className="p-2 rounded-full bg-white shadow-md hover:bg-green-50 transition-colors"
+              className="p-2 rounded-full bg-green-50 shadow-md hover:bg-green-50 transition-colors"
             >
               <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -242,7 +242,7 @@ export default function DealerAvailabilityPage() {
             
             <button
               onClick={() => navigateMonth('next')}
-              className="p-2 rounded-full bg-white shadow-md hover:bg-green-50 transition-colors"
+              className="p-2 rounded-full bg-green-50 shadow-md hover:bg-green-50 transition-colors"
             >
               <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -253,7 +253,7 @@ export default function DealerAvailabilityPage() {
 
         {/* Legend */}
         <div className="flex justify-center mb-8">
-          <div className="bg-white rounded-2xl shadow-md p-4 flex items-center space-x-6">
+          <div className="bg-green-50 rounded-2xl shadow-md p-4 flex items-center space-x-6">
             <div className="flex items-center space-x-2">
               <div className="w-4 h-4 bg-green-500 rounded"></div>
               <span className="text-sm text-gray-700">Available</span>
@@ -274,7 +274,7 @@ export default function DealerAvailabilityPage() {
         </div>
 
         {/* Calendar Grid */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+        <div className="bg-green-50 rounded-2xl shadow-lg p-6 mb-6">
           <div className="grid grid-cols-7 gap-4">
             {/* Day headers */}
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
@@ -356,7 +356,7 @@ export default function DealerAvailabilityPage() {
           <button
             onClick={fetchAvailability}
             disabled={loading}
-            className="flex items-center px-6 py-4 bg-white text-green-600 border border-green-600 rounded-xl hover:bg-green-50 transition-colors font-semibold"
+            className="flex items-center px-6 py-4 bg-green-50 text-green-600 border border-green-600 rounded-xl hover:bg-green-50 transition-colors font-semibold"
           >
             <RefreshCw className="h-5 w-5 mr-2" />
             Refresh
@@ -375,7 +375,7 @@ export default function DealerAvailabilityPage() {
         )}
 
         {/* Quick Actions */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mt-6">
+        <div className="bg-green-50 rounded-2xl shadow-lg p-6 mt-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
           <div className="flex flex-wrap gap-4">
             <button

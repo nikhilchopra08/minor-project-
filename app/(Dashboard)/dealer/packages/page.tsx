@@ -306,7 +306,7 @@ const DealerPackages: React.FC = () => {
 
         {/* Create Package Form */}
         {showCreateForm && (
-          <div className="mb-8 bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+          <div className="mb-8 bg-green-50 rounded-lg shadow-lg border border-gray-200 p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold text-gray-900">Create New Package</h2>
               <button
@@ -517,7 +517,7 @@ const DealerPackages: React.FC = () => {
         )}
 
         {/* Packages List */}
-        <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+        <div className="bg-green-50 rounded-lg shadow-lg border border-gray-200 overflow-hidden">
           {packages.length === 0 ? (
             <div className="text-center py-12">
               <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -559,7 +559,7 @@ const DealerPackages: React.FC = () => {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-green-50 divide-y divide-gray-200">
                   {packages.map((pkg) => (
                     <tr key={pkg.id} className="hover:bg-gray-50 transition duration-200">
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -639,7 +639,7 @@ const DealerPackages: React.FC = () => {
         {/* Stats */}
         {packages.length > 0 && (
           <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
+            <div className="bg-green-50 rounded-lg shadow border border-gray-200 p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <svg className="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -653,7 +653,7 @@ const DealerPackages: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
+            <div className="bg-green-50 rounded-lg shadow border border-gray-200 p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <svg className="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -669,7 +669,7 @@ const DealerPackages: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
+            <div className="bg-green-50 rounded-lg shadow border border-gray-200 p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <svg className="h-8 w-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -685,7 +685,7 @@ const DealerPackages: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
+            <div className="bg-green-50 rounded-lg shadow border border-gray-200 p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <svg className="h-8 w-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

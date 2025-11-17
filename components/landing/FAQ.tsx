@@ -45,7 +45,7 @@ export default function FAQSection() {
   };
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-green-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12">
@@ -62,7 +62,7 @@ export default function FAQSection() {
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className="border border-emerald-100 rounded-lg bg-white hover:bg-emerald-50 transition-all duration-300 overflow-hidden"
+              className="border border-emerald-100 rounded-lg bg-green-50 hover:bg-emerald-50 transition-all duration-300 overflow-hidden"
             >
               <button
                 onClick={() => toggleFAQ(index)}

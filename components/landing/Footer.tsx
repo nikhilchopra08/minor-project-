@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-green-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
@@ -61,25 +61,6 @@ export default function Footer() {
             {/* Copyright */}
             <div className="text-gray-400 text-lg">
               © 2025 Greenify — All Rights Reserved
-            </div>
-
-            {/* Social Links */}
-            <div className="flex space-x-6">
-              {[
-                { name: 'Facebook', icon: '📘' },
-                { name: 'Twitter', icon: '🐦' },
-                { name: 'LinkedIn', icon: '💼' },
-                { name: 'Instagram', icon: '📷' }
-              ].map((social) => (
-                <a
-                  key={social.name}
-                  href="#"
-                  className="text-gray-400 hover:text-emerald-400 transition-colors duration-200 text-xl"
-                  aria-label={social.name}
-                >
-                  {social.icon}
-                </a>
-              ))}
             </div>
           </div>
         </div>

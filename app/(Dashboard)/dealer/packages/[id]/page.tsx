@@ -324,7 +324,7 @@ const EditPackagePage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Edit Form */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+            <div className="bg-green-50 rounded-lg shadow-lg border border-gray-200 p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-6">Package Details</h2>
 
               <form onSubmit={handleUpdatePackage} className="space-y-6">
@@ -528,7 +528,7 @@ const EditPackagePage: React.FC = () => {
 
           {/* Package Info Sidebar */}
           <div className="space-y-6">
-            <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+            <div className="bg-green-50 rounded-lg shadow-lg border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Package Information</h3>
               <dl className="space-y-3">
                 <div>
@@ -564,7 +564,7 @@ const EditPackagePage: React.FC = () => {
               </dl>
             </div>
 
-            <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+            <div className="bg-green-50 rounded-lg shadow-lg border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Current Services</h3>
               <div className="space-y-2">
                 {pkg.services.map((pkgService) => (
@@ -581,7 +581,7 @@ const EditPackagePage: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+            <div className="bg-green-50 rounded-lg shadow-lg border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
               <div className="space-y-3">
                 <Link

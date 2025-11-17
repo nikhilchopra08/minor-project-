@@ -10,14 +10,43 @@ import DealerRegistration from '@/components/landing/DealerRegistration'
 
 const page = () => {
   return (
-    <div className='h-[90vh] w-screen'>
+    <div className='w-screen'>
       <Navbar/>
-      <Image className='h-full w-full' src={'/hero.png'} height={500}  width={500} alt='hero'/>
-      <HeroSection/>
-      <HowItWorks/>
-      <DealerRegistration/>
-      <FAQSection/>
-      {/* <Contact/> */}
+      
+      {/* Hero Section */}
+      <section id="hero" className="min-h-screen">
+        <Image 
+          className='h-full w-full object-cover' 
+          src={'/hero.png'} 
+          height={500}  
+          width={500} 
+          alt='hero'
+        />
+        <div className="inset-0 h-[100vh] w-[100vw] flex items-center justify-center">
+          <HeroSection/>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section id="how-it-works" className="min-h-screen py-20">
+        <HowItWorks/>
+      </section>
+
+      {/* Get Started Section */}
+      <section id="get-started" className="min-h-screen py-20 bg-green-50">
+        <DealerRegistration/>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="min-h-screen py-20 bg-gray-50">
+        <FAQSection/>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="min-h-screen py-20">
+        <Contact/>
+      </section>
+
       <Footer/>
     </div>
   )

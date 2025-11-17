@@ -133,7 +133,7 @@ export default function QuoteRequestPage() {
         </div>
 
         {/* Form */}
-        <div className="bg-white rounded-2xl shadow-lg p-8">
+        <div className="bg-green-50 rounded-2xl shadow-lg p-8">
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Project Type */}
             <div>

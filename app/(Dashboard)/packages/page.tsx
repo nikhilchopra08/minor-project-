@@ -180,7 +180,7 @@ export default function PackagesPage() {
         </div>
 
         {/* Filters Section */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+        <div className="bg-green-50 rounded-2xl shadow-lg p-6 mb-8">
           <div className="flex flex-col lg:flex-row gap-4 items-end">
             {/* Search Input */}
             <div className="flex-1">
@@ -251,7 +251,7 @@ export default function PackagesPage() {
         {!loading && !error && (
           <>
             {packages.length === 0 ? (
-              <div className="text-center py-12 bg-white rounded-2xl shadow-lg">
+              <div className="text-center py-12 bg-green-50 rounded-2xl shadow-lg">
                 <Zap className="h-16 w-16 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">No packages found</h3>
                 <p className="text-gray-600 mb-4">Try adjusting your filters or search terms</p>
@@ -314,7 +314,7 @@ function PackageCard({ pkg, onViewDetails, onContact, formatPrice, getPriceRange
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-green-100 group">
+    <div className="bg-green-50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-green-100 group">
       {/* Price Range Badge */}
       <div className={`px-4 py-2 ${priceRangeColors[priceRange as keyof typeof priceRangeColors]} text-sm font-semibold text-center`}>
         {priceRange} Package

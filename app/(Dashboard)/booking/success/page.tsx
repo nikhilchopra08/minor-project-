@@ -12,7 +12,7 @@ export default function BookingSuccessPage() {
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-green-100 flex items-center justify-center py-12">
       <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
         {/* Success Card */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+        <div className="bg-green-50 rounded-2xl shadow-lg p-8 text-center">
           {/* Success Icon */}
           <div className="flex justify-center mb-6">
             <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center">
@@ -39,7 +39,7 @@ export default function BookingSuccessPage() {
           )}
 
           {/* Next Steps */}
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 text-left">
+          <div className="bg-green-50 border border-blue-200 rounded-xl p-4 mb-6 text-left">
             <h3 className="font-semibold text-blue-900 mb-3 flex items-center">
               <MessageCircle className="h-5 w-5 mr-2" />
               What happens next?

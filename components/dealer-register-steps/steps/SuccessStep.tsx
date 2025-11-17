@@ -21,7 +21,7 @@ const SuccessStep: React.FC = () => {
         </button>
         <button
           onClick={() => window.location.href = '/'}
-          className="w-full sm:w-auto bg-white text-emerald-500 border-2 border-emerald-500 hover:bg-emerald-500 hover:text-white py-4 px-8 rounded-xl text-lg font-semibold transition-all duration-300 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+          className="w-full sm:w-auto bg-green-50 text-emerald-500 border-2 border-emerald-500 hover:bg-emerald-500 hover:text-white py-4 px-8 rounded-xl text-lg font-semibold transition-all duration-300 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
         >
           Back to Home
         </button>

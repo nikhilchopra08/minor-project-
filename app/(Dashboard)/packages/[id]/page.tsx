@@ -99,7 +99,7 @@ export default function PackageDetailPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
-            <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="bg-green-50 rounded-2xl shadow-lg p-8">
               <div className="h-10 bg-gray-200 rounded w-3/4 mb-4"></div>
               <div className="h-4 bg-gray-200 rounded w-1/4 mb-8"></div>
               <div className="space-y-3">
@@ -147,7 +147,7 @@ export default function PackageDetailPage() {
           Back to Packages
         </button>
 
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div className="bg-green-50 rounded-2xl shadow-lg overflow-hidden">
           {/* Header */}
           <div className="bg-linear-to-r from-green-600 to-emerald-600 p-8 text-white">
             <div className="flex items-start justify-between">

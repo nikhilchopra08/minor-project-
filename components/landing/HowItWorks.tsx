@@ -43,7 +43,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-b from-white to-emerald-50">
+    <section className="py-20 bg-gradient-to-b from-green to-emerald-50">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
         {/* Section Header */}
         <div className="text-center mb-16">
@@ -60,7 +60,7 @@ export default function HowItWorks() {
           {steps.map((step, index) => (
             <div
               key={index}
-              className="relative bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-8 border border-emerald-100 group hover:border-emerald-200"
+              className="relative bg-green-50 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-8 border border-emerald-100 group hover:border-emerald-200"
             >
               {/* Step Number */}
               <div className="absolute -top-4 -left-4 w-16 h-16 bg-emerald-500 text-white rounded-2xl flex items-center justify-center text-2xl font-bold shadow-sm group-hover:bg-emerald-600 transition-colors duration-300">
@@ -84,7 +84,7 @@ export default function HowItWorks() {
               {index < steps.length - 1 && (
                 <div className="hidden lg:block absolute -right-4 top-1/2 transform -translate-y-1/2">
                   <div className="w-8 h-0.5 bg-emerald-200 group-hover:bg-emerald-300 transition-colors duration-300"></div>
-                  <div className="absolute -right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 border-2 border-emerald-200 rounded-full bg-white group-hover:border-emerald-300 transition-colors duration-300"></div>
+                  <div className="absolute -right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 border-2 border-emerald-200 rounded-full bg-green-50 group-hover:border-emerald-300 transition-colors duration-300"></div>
                 </div>
               )}
             </div>
@@ -92,7 +92,7 @@ export default function HowItWorks() {
         </div>
 
         {/* CTA Section */}
-        <div className="text-center mt-16 bg-white rounded-2xl shadow-sm p-12 border border-emerald-100">
+        <div className="text-center mt-16 bg-green-50 rounded-2xl shadow-sm p-12 border border-emerald-100">
           <h3 className="text-3xl font-semibold text-gray-800 mb-6">
             Ready to Start Your Solar Journey?
           </h3>

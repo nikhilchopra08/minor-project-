@@ -11,7 +11,7 @@ export default function QuoteSuccessPage() {
   return (
     <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 py-8">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+        <div className="bg-green-50 rounded-2xl shadow-lg p-8 text-center">
           {/* Success Icon */}
           <div className="flex justify-center mb-6">
             <div className="rounded-full bg-green-100 p-4">

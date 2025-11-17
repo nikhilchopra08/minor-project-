@@ -198,7 +198,7 @@ export default function ServiceBookingPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
-            <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="bg-green-50 rounded-2xl shadow-lg p-8">
               <div className="h-10 bg-gray-200 rounded w-3/4 mb-4"></div>
               <div className="h-4 bg-gray-200 rounded w-1/4 mb-8"></div>
               <div className="space-y-3">
@@ -257,7 +257,7 @@ export default function ServiceBookingPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Booking Form */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="bg-green-50 rounded-2xl shadow-lg p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Service Summary */}
                 <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
@@ -457,7 +457,7 @@ export default function ServiceBookingPage() {
 
           {/* Service Provider Info */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-8">
+            <div className="bg-green-50 rounded-2xl shadow-lg p-6 sticky top-8">
               <h3 className="text-xl font-bold text-gray-900 mb-4">Service Provider</h3>
               
               <div className="space-y-4">

@@ -123,7 +123,7 @@ const LoginForm: React.FC = () => {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-6 shadow-lg rounded-lg sm:px-10 border border-green-200">
+        <div className="bg-green-50 py-8 px-6 shadow-lg rounded-lg sm:px-10 border border-green-200">
           {error && (
             <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
               <div className="flex items-center">
@@ -230,7 +230,7 @@ const LoginForm: React.FC = () => {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">New to Greenify?</span>
+                <span className="px-2 bg-green-50 text-gray-500">New to Greenify?</span>
               </div>
             </div>
 

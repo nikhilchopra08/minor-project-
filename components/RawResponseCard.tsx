@@ -9,7 +9,7 @@ const RawResponseCard: React.FC<RawResponseCardProps> = ({ apiResponse }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
 
   return (
-    <div className="bg-white shadow-lg rounded-lg border border-green-200 overflow-hidden">
+    <div className="bg-green-50 shadow-lg rounded-lg border border-green-200 overflow-hidden">
       <div className="bg-green-600 px-6 py-4 flex justify-between items-center">
         <h2 className="text-xl font-semibold text-white">API Response</h2>
         <button

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function DealerRegistration() {
   return (
@@ -57,7 +58,7 @@ export default function DealerRegistration() {
                 }
               ].map((benefit, index) => (
                 <div key={index} className="flex items-start space-x-4 group">
-                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm border border-emerald-100 group-hover:shadow-md transition-all duration-300 flex-shrink-0">
+                  <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center shadow-sm border border-emerald-100 group-hover:shadow-md transition-all duration-300 flex-shrink-0">
                     <span className="text-xl">{benefit.icon}</span>
                   </div>
                   <div>
@@ -97,26 +98,10 @@ export default function DealerRegistration() {
           <div className="relative">
             <div className="relative h-[500px] lg:h-[600px] rounded-3xl overflow-hidden bg-gradient-to-br from-white to-emerald-50 border-2 border-emerald-200 shadow-lg flex items-center justify-center">
               {/* Spline Model Placeholder */}
-              <div className="text-center space-y-4 p-8">
-                <div className="w-32 h-32 bg-emerald-100 rounded-3xl flex items-center justify-center mx-auto mb-4">
-                  <span className="text-4xl">🤝</span>
-                </div>
-                <h4 className="text-2xl font-bold text-gray-800">Dealer Partnership</h4>
-                <p className="text-gray-600 max-w-md">
-                  Interactive illustration showing solar professionals collaborating with homeowners
-                </p>
-                <div className="text-sm text-gray-500 mt-4">
-                  Spline Model: Dealer toolkit & handshake animation
-                </div>
-              </div>
+                    <Image className='h-full w-full' src={'/PR.jpg'} height={500}  width={500} alt='hero'/>
               
-              {/* Decorative Elements */}
-              <div className="absolute top-6 right-6 w-20 h-20 bg-emerald-100 rounded-2xl flex items-center justify-center">
-                <span className="text-2xl">☀️</span>
-              </div>
-              <div className="absolute bottom-6 left-6 w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center">
-                <span className="text-xl">📊</span>
-              </div>
+              
+
             </div>
             
             {/* Background decorative elements */}

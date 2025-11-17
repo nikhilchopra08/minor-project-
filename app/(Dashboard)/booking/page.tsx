@@ -284,7 +284,7 @@ const DealerBookings: React.FC = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
+          <div className="bg-green-50 rounded-lg shadow border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <svg className="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -298,7 +298,7 @@ const DealerBookings: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
+          <div className="bg-green-50 rounded-lg shadow border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <svg className="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -312,7 +312,7 @@ const DealerBookings: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
+          <div className="bg-green-50 rounded-lg shadow border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <svg className="h-8 w-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -326,7 +326,7 @@ const DealerBookings: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
+          <div className="bg-green-50 rounded-lg shadow border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <svg className="h-8 w-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -342,7 +342,7 @@ const DealerBookings: React.FC = () => {
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
+        <div className="bg-green-50 rounded-lg shadow border border-gray-200 p-6 mb-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Filters</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
@@ -419,7 +419,7 @@ const DealerBookings: React.FC = () => {
         </div>
 
         {/* Bookings List */}
-        <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+        <div className="bg-green-50 rounded-lg shadow-lg border border-gray-200 overflow-hidden">
           {bookings.length === 0 ? (
             <div className="text-center py-12">
               <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -455,7 +455,7 @@ const DealerBookings: React.FC = () => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-green-50 divide-y divide-gray-200">
                     {bookings.map((booking) => (
                       <tr key={booking.id} className="hover:bg-gray-50 transition duration-200">
                         <td className="px-6 py-4">
@@ -540,7 +540,7 @@ const DealerBookings: React.FC = () => {
 
               {/* Pagination */}
               {pagination.pages > 1 && (
-                <div className="bg-white px-6 py-4 border-t border-gray-200">
+                <div className="bg-green-50 px-6 py-4 border-t border-gray-200">
                   <div className="flex items-center justify-between">
                     <div className="text-sm text-gray-700">
                       Showing{' '}
@@ -603,7 +603,7 @@ const DealerBookings: React.FC = () => {
         {/* Loading Overlay for subsequent loads */}
         {loading && bookings.length > 0 && (
           <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-4 rounded-lg shadow-lg">
+            <div className="bg-green-50 p-4 rounded-lg shadow-lg">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
               <p className="mt-2 text-gray-600">Loading...</p>
             </div>

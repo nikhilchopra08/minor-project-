@@ -97,7 +97,7 @@ export default function Contact() {
           </div>
 
           {/* Contact Form */}
-          <div className="bg-white rounded-2xl shadow-sm p-8 border border-emerald-100">
+          <div className="bg-green-50 rounded-2xl shadow-sm p-8 border border-emerald-100">
             <h3 className="text-2xl font-semibold text-gray-800 mb-6">Send us a Message</h3>
             
             <form className="space-y-6">
@@ -213,7 +213,7 @@ export default function Contact() {
                 answer: "Yes, federal and state incentives can reduce your costs by 30% or more."
               }
             ].map((faq, index) => (
-              <div key={index} className="bg-white rounded-xl p-6 text-left border border-emerald-100 shadow-sm">
+              <div key={index} className="bg-green-50 rounded-xl p-6 text-left border border-emerald-100 shadow-sm">
                 <h4 className="font-semibold text-gray-800 mb-2">{faq.question}</h4>
                 <p className="text-gray-600">{faq.answer}</p>
               </div>
