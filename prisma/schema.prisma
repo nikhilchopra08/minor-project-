@@ -135,6 +135,7 @@ model Service {
 
   dealer   User             @relation(fields: [dealerId], references: [id], onDelete: Cascade)
   packages PackageService[]
+  bookings Booking[]  
 
   @@map("services")
   @@index([createdAt])
@@ -205,7 +206,7 @@ model Quote {
 
   user            User         @relation("UserQuotes", fields: [userId], references: [id], onDelete: Cascade)
   dealer          User         @relation("DealerQuotes", fields: [dealerId], references: [id], onDelete: Cascade)
-  booking         Booking?
+  // booking         Booking?
 
   @@map("quotes")
   @@index([userId])
@@ -217,7 +218,6 @@ model Quote {
 model Booking {
   id              String        @id @default(uuid())
   serviceId       String
-  quoteId         String        @unique
   userId          String
   dealerId        String
   status          BookingStatus @default(SCHEDULED)
@@ -226,7 +226,6 @@ model Booking {
   contactPhone  String?
   contactEmail  String?
 
-  
   // Scheduling
   scheduledDate   DateTime
   estimatedHours  Int
@@ -248,7 +247,7 @@ model Booking {
   // Relations with explicit names
   user            User         @relation("UserBookings", fields: [userId], references: [id], onDelete: Cascade)
   dealer          User         @relation("DealerBookings", fields: [dealerId], references: [id], onDelete: Cascade)
-  quote           Quote        @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  service         Service      @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 
   @@map("bookings")
   @@index([userId])
@@ -258,24 +257,18 @@ model Booking {
 }
 
 model DealerAvailability {
-  id              String      @id @default(uuid())
-  dealerId        String
-  date            DateTime    // Date without time
-  startTime       String      // Format: "09:00"
-  endTime         String      // Format: "17:00"
-  slotDuration    Int         @default(60) // in minutes
-  status          SlotStatus  @default(AVAILABLE)
-  maxBookings     Int         @default(1)
-  currentBookings Int         @default(0)
+  id        String   @id @default(uuid())
+  dealerId  String
+  date      DateTime // Date without time
+  isAvailable Boolean @default(false)
   
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  dealer          User        @relation(fields: [dealerId], references: [id], onDelete: Cascade)
+  dealer    User     @relation(fields: [dealerId], references: [id], onDelete: Cascade)
 
   @@map("dealer_availabilities")
   @@unique([dealerId, date])
   @@index([dealerId])
   @@index([date])
-  @@index([status])
 }

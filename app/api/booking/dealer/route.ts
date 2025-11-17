@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '../../../../lib/prisma';
-import { authMiddleware, roleMiddleware } from '../../../../lib/middleware';
+import { authMiddleware } from '../../../../lib/middleware';
+import { DatabaseService } from '../../../../lib/prisma';
 import { BookingQuerySchema } from '../../../../lib/schemas';
 
 export async function GET(req: NextRequest) {
   try {
-    const dealer = await authMiddleware(req);
+    const user = await authMiddleware(req);
     
-    if (!dealer) {
+    if (!user) {
       return NextResponse.json(
         {
           success: false,
@@ -17,7 +17,8 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    if (!roleMiddleware(['DEALER'])(dealer)) {
+    // Check if user is a dealer
+    if (user.role !== 'DEALER') {
       return NextResponse.json(
         {
           success: false,
@@ -28,98 +29,82 @@ export async function GET(req: NextRequest) {
     }
 
     const { searchParams } = new URL(req.url);
-    const queryParams = BookingQuerySchema.parse(Object.fromEntries(searchParams));
-
-    const { page, limit, status, month, year } = queryParams;
-    const skip = (page - 1) * limit;
-
-    const where: any = { dealerId: dealer.id };
-    if (status) where.status = status;
     
-    if (month && year) {
-      const startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
-      const endDate = new Date(parseInt(year), parseInt(month), 0);
-      where.scheduledDate = {
-        gte: startDate,
-        lte: endDate,
-      };
-    }
+    // Parse query parameters with proper defaults and filtering
+    const queryParams = {
+      page: searchParams.get('page') || '1',
+      limit: searchParams.get('limit') || '10',
+      status: searchParams.get('status') || undefined, // Use undefined instead of null
+      month: searchParams.get('month') || undefined,
+      year: searchParams.get('year') || undefined,
+    };
 
-    const [bookings, totalCount] = await Promise.all([
-      prisma.booking.findMany({
-        where,
-        include: {
-          user: {
-            include: {
-              userProfile: {
-                select: {
-                  fullName: true,
-                  phone: true,
-                  address: true,
-                  city: true,
-                  state: true,
-                },
-              },
-            },
-          },
-          quote: {
-            select: {
-              renovationType: true,
-              description: true,
-            },
-          },
-        },
-        skip,
-        take: limit,
-        orderBy: { scheduledDate: 'asc' },
-      }),
-      prisma.booking.count({ where }),
-    ]);
+    // Remove undefined values to avoid Zod validation issues
+    const filteredParams = Object.fromEntries(
+      Object.entries(queryParams).filter(([_, value]) => value !== undefined)
+    );
 
-    // Get booking statistics for dealer
-    const stats = await prisma.booking.aggregate({
-      where: { dealerId: dealer.id },
-      _count: {
-        _all: true,
-      },
-      _sum: {
-        totalAmount: true,
-      },
+    const validatedQuery = BookingQuerySchema.parse(filteredParams);
+
+    const { page, limit, status, month, year } = validatedQuery;
+
+    // Use DatabaseService to get dealer bookings
+    const bookingsData = await DatabaseService.findDealerBookings(user.id, {
+      page,
+      limit,
+      status,
+      month,
+      year
     });
 
+    // Get booking statistics for dealer
+    const stats = await DatabaseService.getBookingStats(user.id);
+
     const today = new Date();
-    const upcomingBookings = await prisma.booking.count({
-      where: {
-        dealerId: dealer.id,
-        scheduledDate: {
-          gte: today,
-        },
-        status: {
-          in: ['SCHEDULED', 'IN_PROGRESS'],
-        },
-      },
+    const upcomingBookings = await DatabaseService.findDealerBookings(user.id, {
+      status: 'SCHEDULED',
+      page: 1,
+      limit: 100 // Get all upcoming bookings for count
     });
 
     return NextResponse.json({
       success: true,
       message: 'Dealer bookings retrieved successfully',
       data: {
-        bookings,
+        bookings: bookingsData.bookings,
         stats: {
-          totalBookings: stats._count._all,
-          totalRevenue: stats._sum.totalAmount || 0,
-          upcomingBookings,
+          totalBookings: stats.total,
+          totalRevenue: stats.totalRevenue,
+          upcomingBookings: upcomingBookings.totalCount,
+          scheduled: stats.scheduled,
+          inProgress: stats.inProgress,
+          completed: stats.completed,
+          cancelled: stats.cancelled,
+          completionRate: stats.completionRate
         },
         pagination: {
-          page,
-          limit,
-          total: totalCount,
-          pages: Math.ceil(totalCount / limit),
+          page: bookingsData.page,
+          limit: bookingsData.limit,
+          total: bookingsData.totalCount,
+          pages: bookingsData.totalPages,
         },
       },
     });
   } catch (error) {
     console.error('Get dealer bookings error:', error);
+    
+    // Handle validation errors
+    if (error instanceof Error && error.name === 'ZodError') {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Invalid query parameters',
+          errors: error.message,
+        },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       {
         success: false,

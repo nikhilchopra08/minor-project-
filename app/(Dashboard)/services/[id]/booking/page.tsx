@@ -38,6 +38,11 @@ interface BookingForm {
   specialNotes: string;
 }
 
+interface AvailableDate {
+  date: string;
+  isAvailable: boolean;
+}
+
 export default function ServiceBookingPage() {
   const params = useParams();
   const router = useRouter();
@@ -46,13 +51,15 @@ export default function ServiceBookingPage() {
   const [error, setError] = useState<string | null>(null);
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingError, setBookingError] = useState<string | null>(null);
+  const [availableDates, setAvailableDates] = useState<AvailableDate[]>([]);
+  const [checkingAvailability, setCheckingAvailability] = useState(false);
 
   const [formData, setFormData] = useState<BookingForm>({
     serviceId: params.id as string,
     dealerId: '',
     scheduledDate: '',
     startTime: '09:00',
-    estimatedHours: 4,
+    estimatedHours: 2,
     location: '',
     contactPhone: '',
     contactEmail: '',
@@ -60,7 +67,7 @@ export default function ServiceBookingPage() {
   });
 
   const timeSlots = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
-  const durationOptions = [2, 4, 6, 8];
+  const durationOptions = [1, 2, 3, 4, 6, 8];
 
   // Fetch service details
   useEffect(() => {
@@ -76,6 +83,9 @@ export default function ServiceBookingPage() {
             ...prev,
             dealerId: data.data.dealer.id
           }));
+          
+          // Load available dates for the next 3 months
+          await loadAvailableDates(data.data.dealer.id);
         } else {
           setError('Service not found');
         }
@@ -91,6 +101,44 @@ export default function ServiceBookingPage() {
       fetchService();
     }
   }, [params.id]);
+
+  const loadAvailableDates = async (dealerId: string) => {
+    try {
+      setCheckingAvailability(true);
+      const startDate = new Date().toISOString().split('T')[0];
+      const endDate = new Date();
+      endDate.setMonth(endDate.getMonth() + 3);
+      const endDateStr = endDate.toISOString().split('T')[0];
+
+      const response = await fetch(
+        `/api/availability?dealerId=${dealerId}&startDate=${startDate}&endDate=${endDateStr}`
+      );
+      const data = await response.json();
+
+      if (data.availability) {
+        setAvailableDates(data.availability);
+      }
+    } catch (err) {
+      console.error('Error loading available dates:', err);
+    } finally {
+      setCheckingAvailability(false);
+    }
+  };
+
+  const isDateAvailable = (date: string) => {
+    const dateObj = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Don't allow past dates
+    if (dateObj < today) return false;
+    
+    const availableDate = availableDates.find(ad => 
+      new Date(ad.date).toDateString() === dateObj.toDateString()
+    );
+    
+    return availableDate ? availableDate.isAvailable : false;
+  };
 
   const handleInputChange = (field: keyof BookingForm, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -109,21 +157,26 @@ export default function ServiceBookingPage() {
     return maxDate.toISOString().split('T')[0];
   };
 
+  const handleDateChange = (date: string) => {
+    if (isDateAvailable(date)) {
+      handleInputChange('scheduledDate', date);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate date availability
+    if (!isDateAvailable(formData.scheduledDate)) {
+      setBookingError('Selected date is not available. Please choose another date.');
+      return;
+    }
+
     setBookingLoading(true);
     setBookingError(null);
 
     try {
-    //   const response = await fetch('/api/booking/create', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(formData),
-    //   });
-    const response = await apiClient.post('/api/booking/create', formData);
-
+      const response = await apiClient.post('/api/booking/create', formData);
       const data = await response.json();
 
       if (data.success) {
@@ -131,8 +184,8 @@ export default function ServiceBookingPage() {
       } else {
         setBookingError(data.message || 'Failed to create booking');
       }
-    } catch (err) {
-      setBookingError('An error occurred while creating your booking');
+    } catch (err: any) {
+      setBookingError(err.message || 'An error occurred while creating your booking');
       console.error('Booking error:', err);
     } finally {
       setBookingLoading(false);
@@ -284,22 +337,48 @@ export default function ServiceBookingPage() {
                     <Calendar className="h-5 w-5 mr-2 text-green-600" />
                     Schedule Service
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <label htmlFor="scheduledDate" className="block text-sm font-medium text-gray-700 mb-2">
-                        Date *
-                      </label>
+                  
+                  {/* Date Selection */}
+                  <div className="mb-4">
+                    <label htmlFor="scheduledDate" className="block text-sm font-medium text-gray-700 mb-2">
+                      Date *
+                    </label>
+                    <div className="flex items-center gap-2">
                       <input
                         type="date"
                         id="scheduledDate"
                         required
                         value={formData.scheduledDate}
-                        onChange={(e) => handleInputChange('scheduledDate', e.target.value)}
+                        onChange={(e) => handleDateChange(e.target.value)}
                         min={getMinDate()}
                         max={getMaxDate()}
                         className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
                       />
+                      {checkingAvailability && (
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+                      )}
                     </div>
+                    
+                    {/* Date Availability Status */}
+                    {formData.scheduledDate && (
+                      <div className={`mt-2 text-sm flex items-center ${
+                        isDateAvailable(formData.scheduledDate) 
+                          ? 'text-green-600' 
+                          : 'text-red-600'
+                      }`}>
+                        {isDateAvailable(formData.scheduledDate) ? (
+                          <>
+                            <CheckCircle className="h-4 w-4 mr-1" />
+                            This date is available for booking
+                          </>
+                        ) : (
+                          'This date is not available. Please choose another date.'
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="startTime" className="block text-sm font-medium text-gray-700 mb-2">
                         Start Time *
@@ -318,7 +397,7 @@ export default function ServiceBookingPage() {
                     </div>
                     <div>
                       <label htmlFor="estimatedHours" className="block text-sm font-medium text-gray-700 mb-2">
-                        Duration *
+                        Duration (hours) *
                       </label>
                       <select
                         id="estimatedHours"
@@ -328,7 +407,7 @@ export default function ServiceBookingPage() {
                         className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
                       >
                         {durationOptions.map(hours => (
-                          <option key={hours} value={hours}>{hours} hours</option>
+                          <option key={hours} value={hours}>{hours} hour{hours > 1 ? 's' : ''}</option>
                         ))}
                       </select>
                     </div>
@@ -360,7 +439,7 @@ export default function ServiceBookingPage() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={bookingLoading}
+                  disabled={bookingLoading || !isDateAvailable(formData.scheduledDate)}
                   className="w-full bg-green-600 text-white py-4 px-6 rounded-xl hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed transition-colors font-semibold text-lg"
                 >
                   {bookingLoading ? (

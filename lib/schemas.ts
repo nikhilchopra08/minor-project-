@@ -152,17 +152,15 @@ export const QuoteQuerySchema = z.object({
   status: z.enum(['PENDING', 'RESPONDED', 'REVISED', 'ACCEPTED', 'REJECTED', 'EXPIRED']).optional(),
 });
 
-
 // Booking Schemas
-// Update CreateBookingSchema to use service instead of quote
 export const CreateBookingSchema = z.object({
-  serviceId: z.string().min(1, "Service ID is required"),
+  serviceId: z.string().uuid("Invalid service ID format"),
   scheduledDate: z.string().min(1, "Scheduled date is required"),
-  startTime: z.string().min(1, "Start time is required"),
-  estimatedHours: z.number().min(1, "Estimated hours must be at least 1"),
-  specialNotes: z.string().optional(),
-  location: z.string().min(1, "Location is required"),
-  contactPhone: z.string().min(1, "Contact phone is required"),
+  startTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Time must be in HH:MM format (24-hour)"),
+  estimatedHours: z.number().min(1, "Estimated hours must be at least 1").max(12, "Cannot book more than 12 hours"),
+  specialNotes: z.string().max(500, "Special notes cannot exceed 500 characters").optional().default(""),
+  location: z.string().min(5, "Location must be at least 5 characters").max(200, "Location cannot exceed 200 characters"),
+  contactPhone: z.string().min(10, "Phone number must be at least 10 digits").max(15, "Phone number too long"),
   contactEmail: z.string().email("Valid email is required"),
 });
 
@@ -179,21 +177,59 @@ export const BookingQuerySchema = z.object({
   year: z.string().optional(),
 });
 
-// Availability Schemas
+// Updated Availability Schemas to match Prisma model
+// Updated Availability Schemas
 export const CreateAvailabilitySchema = z.object({
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (YYYY-MM-DD)"),
-  startTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format (HH:MM)"),
-  endTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid time format (HH:MM)"),
-  slotDuration: z.number().min(30).max(240).default(60), // 30min to 4 hours
-  maxBookings: z.number().min(1).max(10).default(1),
+  date: z.string({
+    invalid_type_error: "Date must be a string"
+  }).regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (YYYY-MM-DD)"),
+  isAvailable: z.boolean().default(true),
+});
+
+export const UpdateAvailabilitySchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (YYYY-MM-DD)").optional(),
+  isAvailable: z.boolean().optional(),
+  id: z.string().optional(),
+});
+
+export const BulkAvailabilitySchema = z.object({
+  availabilities: z.array(z.object({
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (YYYY-MM-DD)"),
+    isAvailable: z.boolean().default(true),
+  })).min(1, "At least one availability entry is required"),
 });
 
 export const AvailabilityQuerySchema = z.object({
-  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
-  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (YYYY-MM-DD)"),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (YYYY-MM-DD)"),
   dealerId: z.string().uuid().optional(),
 });
 
+export const CheckAvailabilitySchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (YYYY-MM-DD)"),
+  dealerId: z.string().uuid("Invalid dealer ID"),
+});
+
+// Additional schemas for dealer operations
+export const DealerServicesQuerySchema = z.object({
+  page: z.string().optional().default("1").transform(Number),
+  limit: z.string().optional().default("10").transform(Number),
+  category: z.string().optional(),
+  isActive: z.boolean().optional(),
+});
+
+export const DealerPackagesQuerySchema = z.object({
+  page: z.string().optional().default("1").transform(Number),
+  limit: z.string().optional().default("10").transform(Number),
+  isActive: z.boolean().optional(),
+});
+
+export const ServiceSearchSchema = z.object({
+  query: z.string().min(1, "Search query is required"),
+  category: z.string().optional(),
+  page: z.string().optional().default("1").transform(Number),
+  limit: z.string().optional().default("10").transform(Number),
+});
 
 export type RegisterUserInput = z.infer<typeof RegisterUserSchema>;
 export type RegisterDealerInput = z.infer<typeof RegisterDealerSchema>;
@@ -217,5 +253,15 @@ export type QuoteQueryInput = z.infer<typeof QuoteQuerySchema>;
 export type CreateBookingInput = z.infer<typeof CreateBookingSchema>;
 export type UpdateBookingStatusInput = z.infer<typeof UpdateBookingStatusSchema>;
 export type BookingQueryInput = z.infer<typeof BookingQuerySchema>;
+
+// Updated availability types
 export type CreateAvailabilityInput = z.infer<typeof CreateAvailabilitySchema>;
+export type UpdateAvailabilityInput = z.infer<typeof UpdateAvailabilitySchema>;
+export type BulkAvailabilityInput = z.infer<typeof BulkAvailabilitySchema>;
 export type AvailabilityQueryInput = z.infer<typeof AvailabilityQuerySchema>;
+export type CheckAvailabilityInput = z.infer<typeof CheckAvailabilitySchema>;
+
+// Additional types
+export type DealerServicesQueryInput = z.infer<typeof DealerServicesQuerySchema>;
+export type DealerPackagesQueryInput = z.infer<typeof DealerPackagesQuerySchema>;
+export type ServiceSearchInput = z.infer<typeof ServiceSearchSchema>;

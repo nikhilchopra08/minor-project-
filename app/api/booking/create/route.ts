@@ -54,25 +54,26 @@ export async function POST(req: NextRequest) {
     }
 
     // Check dealer availability
-    const isAvailable = await prisma.dealerAvailability.findFirst({
+    const dealerAvailability = await prisma.dealerAvailability.findFirst({
       where: {
         dealerId: service.dealerId,
         date: new Date(scheduledDate),
-        status: 'AVAILABLE',
-        startTime: { lte: startTime },
-        endTime: { gte: calculateEndTime(startTime, estimatedHours) },
+        isAvailable: true,
       },
     });
 
-    if (!isAvailable) {
+    if (!dealerAvailability) {
       return NextResponse.json(
         {
           success: false,
-          message: 'Dealer not available at the selected time',
+          message: 'Dealer is not available on the selected date',
         },
         { status: 400 }
       );
     }
+
+    // Calculate end time for overlap checking
+    const endTime = calculateEndTime(startTime, estimatedHours);
 
     // Check for overlapping bookings
     const overlappingBooking = await prisma.booking.findFirst({
@@ -88,8 +89,12 @@ export async function POST(req: NextRequest) {
             endTime: { gt: startTime },
           },
           {
-            startTime: { lt: calculateEndTime(startTime, estimatedHours) },
-            endTime: { gte: calculateEndTime(startTime, estimatedHours) },
+            startTime: { lt: endTime },
+            endTime: { gte: endTime },
+          },
+          {
+            startTime: { gte: startTime },
+            endTime: { lte: endTime },
           },
         ],
       },
@@ -105,55 +110,73 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Create booking - FIXED: Use correct field names from your Prisma schema
-const booking = await prisma.booking.create({
-  data: {
-    serviceId: service.id,
-    quoteId: crypto.randomUUID(), // or your actual quote ID
-    userId: user.id,
-    dealerId: service.dealerId,
+    // Create booking
+    const booking = await prisma.booking.create({
+      data: {
+        serviceId: service.id,
+        userId: user.id,
+        dealerId: service.dealerId,
 
-    scheduledDate: new Date(scheduledDate),
-    startTime,
-    estimatedHours,
-    endTime: calculateEndTime(startTime, estimatedHours),
+        scheduledDate: new Date(scheduledDate),
+        startTime,
+        estimatedHours,
+        endTime,
 
-    // Must be valid JSON (your schema says Json)
-    services: [
-      {
-        id: service.id,
-        name: service.name,
-        price: service.price,
-        category: service.category,
-        duration: service.duration,
+        // Service details as JSON
+        services: [
+          {
+            id: service.id,
+            name: service.name,
+            price: service.price,
+            category: service.category,
+            duration: service.duration,
+            description: service.description,
+          },
+        ],
+        
+
+        totalAmount: service.price ?? 0,
+        specialNotes: specialNotes || "",
+
+        location: location || "",
+        contactPhone: contactPhone || "",
+        contactEmail: contactEmail || user.email || "",
+
+        status: "SCHEDULED",
       },
-    ],
-
-    totalAmount: service.price ?? 0,
-    specialNotes: specialNotes || "",
-
-    location: location || "",
-    contactPhone: contactPhone || "",
-    contactEmail: contactEmail || "",
-
-    status: "SCHEDULED",
-  },
-  include: {
-    dealer: {
       include: {
-        dealerProfile: {
+        service: {
           select: {
-            businessName: true,
-            phone: true,
-            address: true,
+            name: true,
+            description: true,
+            category: true,
+            duration: true,
+          },
+        },
+        dealer: {
+          include: {
+            dealerProfile: {
+              select: {
+                businessName: true,
+                phone: true,
+                address: true,
+              },
+            },
+          },
+        },
+        user: {
+          select: {
+            email: true,
+            userProfile: {
+              select: {
+                fullName: true,
+                phone: true,
+              },
+            },
           },
         },
       },
-    },
-    quote: true, // you have this relation
-  },
-});
-
+    });
 
     return NextResponse.json(
       {
@@ -175,10 +198,13 @@ const booking = await prisma.booking.create({
   }
 }
 
-// Helper function to calculate end time
+// Improved helper function to calculate end time
 function calculateEndTime(startTime: string, hours: number): string {
   const [hoursStr, minutesStr] = startTime.split(':');
-  let totalHours = parseInt(hoursStr) + hours;
-  let endHours = totalHours % 24;
-  return `${endHours.toString().padStart(2, '0')}:${minutesStr}`;
+  const startDate = new Date();
+  startDate.setHours(parseInt(hoursStr), parseInt(minutesStr), 0, 0);
+  
+  const endDate = new Date(startDate.getTime() + (hours * 60 * 60 * 1000));
+  
+  return `${endDate.getHours().toString().padStart(2, '0')}:${endDate.getMinutes().toString().padStart(2, '0')}`;
 }

@@ -370,6 +370,117 @@ export class DatabaseService {
     });
   }
 
+  // Availability methods - UPDATED
+  static async createDealerAvailability(availabilityData: {
+    dealerId: string;
+    date: Date;
+    isAvailable: boolean;
+  }) {
+    return await prisma.dealerAvailability.create({
+      data: availabilityData,
+    });
+  }
+
+  static async updateDealerAvailability(id: string, availabilityData: {
+    isAvailable?: boolean;
+    date?: Date;
+  }) {
+    return await prisma.dealerAvailability.update({
+      where: { id },
+      data: availabilityData,
+    });
+  }
+
+  static async getDealerAvailability(dealerId: string, startDate: Date, endDate: Date) {
+    return await prisma.dealerAvailability.findMany({
+      where: {
+        dealerId,
+        date: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+      orderBy: {
+        date: 'asc',
+      },
+    });
+  }
+
+  static async getDealerAvailabilityByDate(dealerId: string, date: Date) {
+    return await prisma.dealerAvailability.findUnique({
+      where: {
+        dealerId_date: {
+          dealerId,
+          date,
+        },
+      },
+    });
+  }
+
+  static async setDealerAvailability(availabilityData: {
+    dealerId: string;
+    date: Date;
+    isAvailable: boolean;
+  }) {
+    return await prisma.dealerAvailability.upsert({
+      where: {
+        dealerId_date: {
+          dealerId: availabilityData.dealerId,
+          date: availabilityData.date,
+        },
+      },
+      update: {
+        isAvailable: availabilityData.isAvailable,
+      },
+      create: availabilityData,
+    });
+  }
+
+  static async bulkUpdateDealerAvailability(
+    dealerId: string, 
+    availabilityUpdates: Array<{ date: Date; isAvailable: boolean }>
+  ) {
+    const transactions = availabilityUpdates.map(update =>
+      prisma.dealerAvailability.upsert({
+        where: {
+          dealerId_date: {
+            dealerId,
+            date: update.date,
+          },
+        },
+        update: {
+          isAvailable: update.isAvailable,
+        },
+        create: {
+          dealerId,
+          date: update.date,
+          isAvailable: update.isAvailable,
+        },
+      })
+    );
+
+    return await prisma.$transaction(transactions);
+  }
+
+  static async deleteDealerAvailability(id: string) {
+    return await prisma.dealerAvailability.delete({
+      where: { id },
+    });
+  }
+
+  static async checkDealerAvailability(dealerId: string, date: Date) {
+    const availability = await prisma.dealerAvailability.findUnique({
+      where: {
+        dealerId_date: {
+          dealerId,
+          date,
+        },
+      },
+    });
+
+    return availability?.isAvailable ?? false;
+  }
+
   // Admin methods
   static async getAdminStats() {
     const [
@@ -957,91 +1068,108 @@ export class DatabaseService {
     };
   }
 
-   static async createBooking(bookingData: {
-    quoteId: string;
-    userId: string;
-    dealerId: string;
-    scheduledDate: Date;
-    startTime: string;
-    estimatedHours: number;
-    services: any[];
-    totalAmount: number;
-    specialNotes?: string;
-  }) {
-    return await prisma.booking.create({
-      data: {
-        ...bookingData,
-        endTime: this.calculateEndTime(bookingData.startTime, bookingData.estimatedHours),
-      },
-      include: {
-        user: {
-          include: {
-            userProfile: {
-              select: {
-                fullName: true,
-                phone: true,
-                address: true,
-                city: true,
-                state: true,
-              },
+// PROBLEMATIC CODE - remove user include
+static async createBooking(bookingData: {
+  serviceId: string;
+  userId: string;
+  dealerId: string;
+  scheduledDate: Date;
+  startTime: string;
+  estimatedHours: number;
+  services: any[];
+  totalAmount: number;
+  specialNotes?: string;
+  location?: string;
+  contactPhone?: string;
+  contactEmail?: string;
+}) {
+  return await prisma.booking.create({
+    data: {
+      ...bookingData,
+      endTime: this.calculateEndTime(bookingData.startTime, bookingData.estimatedHours),
+      status: 'SCHEDULED',
+    },
+    include: {
+      user: {
+        include: {
+          userProfile: {
+            select: {
+              fullName: true,
+              phone: true,
+              address: true,
+              city: true,
+              state: true,
             },
           },
         },
-        dealer: {
-          include: {
-            dealerProfile: {
-              select: {
-                businessName: true,
-                phone: true,
-                address: true,
-              },
+      },
+      dealer: {
+        include: {
+          dealerProfile: {
+            select: {
+              businessName: true,
+              phone: true,
+              address: true,
             },
           },
         },
-        quote: {
-          select: {
-            renovationType: true,
-            description: true,
-          },
+      },
+      service: {
+        select: {
+          name: true,
+          description: true,
+          category: true,
+          duration: true,
         },
       },
-    });
-  }
+    },
+  });
+}
 
-  static async findBookingById(id: string) {
-    return await prisma.booking.findUnique({
-      where: { id },
-      include: {
-        user: {
-          select: {
-            email: true,
-            userProfile: {
-              select: {
-                fullName: true,
-                phone: true,
-                address: true,
-                city: true,
-                state: true,
-              },
+
+// find booking by id update krni hai
+static async findBookingById(id: string) {
+  return await prisma.booking.findUnique({
+    where: { id },
+    include: {
+      user: {
+        select: {
+          email: true,
+          userProfile: {
+            select: {
+              fullName: true,
+              phone: true,
+              address: true,
+              city: true,
+              state: true,
             },
           },
         },
-        dealer: {
-          include: {
-            dealerProfile: {
-              select: {
-                businessName: true,
-                businessEmail: true,
-                phone: true,
-                address: true,
-              },
-            },
-          },
-        },
-        quote: true,
       },
-    });
-  }
+      dealer: {
+        include: {
+          dealerProfile: {
+            select: {
+              businessName: true,
+              businessEmail: true,
+              phone: true,
+              address: true,
+            },
+          },
+        },
+      },
+      service: {
+        select: {
+          name: true,
+          description: true,
+          category: true,
+          price: true,
+          duration: true,
+        },
+      },
+    },
+  });
+}
 
   static async findUserBookings(userId: string, query: any = {}) {
     const { page = 1, limit = 10, status, month, year } = query;
@@ -1059,34 +1187,36 @@ export class DatabaseService {
       };
     }
 
-    const [bookings, totalCount] = await Promise.all([
-      prisma.booking.findMany({
-        where,
-        include: {
-          dealer: {
-            include: {
-              dealerProfile: {
-                select: {
-                  businessName: true,
-                  city: true,
-                  state: true,
-                  phone: true,
-                },
+  const [bookings, totalCount] = await Promise.all([
+    prisma.booking.findMany({
+      where,
+      include: {
+        dealer: {
+          include: {
+            dealerProfile: {
+              select: {
+                businessName: true,
+                city: true,
+                state: true,
+                phone: true,
               },
             },
           },
-          quote: {
-            select: {
-              renovationType: true,
-            },
+        },
+        service: { // ADD SERVICE INSTEAD OF QUOTE
+          select: {
+            name: true,
+            category: true,
+            duration: true,
           },
         },
-        skip,
-        take: limit,
-        orderBy: { scheduledDate: 'asc' },
-      }),
-      prisma.booking.count({ where }),
-    ]);
+      },
+      skip,
+      take: limit,
+      orderBy: { scheduledDate: 'asc' },
+    }),
+    prisma.booking.count({ where }),
+  ]);
 
     return {
       bookings,
@@ -1113,36 +1243,37 @@ export class DatabaseService {
       };
     }
 
-    const [bookings, totalCount] = await Promise.all([
-      prisma.booking.findMany({
-        where,
-        include: {
-          user: {
-            include: {
-              userProfile: {
-                select: {
-                  fullName: true,
-                  phone: true,
-                  address: true,
-                  city: true,
-                  state: true,
-                },
+const [bookings, totalCount] = await Promise.all([
+    prisma.booking.findMany({
+      where,
+      include: {
+        user: {
+          include: {
+            userProfile: {
+              select: {
+                fullName: true,
+                phone: true,
+                address: true,
+                city: true,
+                state: true,
               },
             },
           },
-          quote: {
-            select: {
-              renovationType: true,
-              description: true,
-            },
+        },
+        service: { // ADD SERVICE INSTEAD OF QUOTE
+          select: {
+            name: true,
+            category: true,
+            duration: true,
           },
         },
-        skip,
-        take: limit,
-        orderBy: { scheduledDate: 'asc' },
-      }),
-      prisma.booking.count({ where }),
-    ]);
+      },
+      skip,
+      take: limit,
+      orderBy: { scheduledDate: 'asc' },
+    }),
+    prisma.booking.count({ where }),
+  ]);
 
     return {
       bookings,
@@ -1152,6 +1283,8 @@ export class DatabaseService {
       totalPages: Math.ceil(totalCount / limit),
     };
   }
+
+  // end here
 
   static async updateBookingStatus(id: string, status: string, cancellationReason?: string) {
     const updateData: any = { status };
@@ -1182,103 +1315,15 @@ export class DatabaseService {
     });
   }
 
-  // Availability methods
-  static async createDealerAvailability(availabilityData: {
-    dealerId: string;
-    date: Date;
-    startTime: string;
-    endTime: string;
-    slotDuration: number;
-    maxBookings: number;
-  }) {
-    return await prisma.dealerAvailability.create({
-      data: availabilityData,
-    });
-  }
-
-  static async getDealerAvailability(dealerId: string, startDate: Date, endDate: Date) {
-    return await prisma.dealerAvailability.findMany({
-      where: {
-        dealerId,
-        date: {
-          gte: startDate,
-          lte: endDate,
-        },
-      },
-      orderBy: {
-        date: 'asc',
-      },
-    });
-  }
-
-  static async checkSlotAvailability(dealerId: string, date: Date, startTime: string, duration: number) {
-    const availability = await prisma.dealerAvailability.findFirst({
-      where: {
-        dealerId,
-        date,
-        status: 'AVAILABLE',
-        startTime: { lte: startTime },
-        endTime: { gte: this.calculateEndTime(startTime, duration) },
-      },
-    });
-
-    if (!availability) return false;
-
-    // Check if slot is not fully booked
-    const existingBookings = await prisma.booking.count({
-      where: {
-        dealerId,
-        scheduledDate: date,
-        status: {
-          in: ['SCHEDULED', 'IN_PROGRESS', 'RESCHEDULED'],
-        },
-      },
-    });
-
-    return existingBookings < availability.maxBookings;
-  }
-
-  static async getAvailableSlots(dealerId: string, date: Date) {
-    const availability = await prisma.dealerAvailability.findFirst({
-      where: {
-        dealerId,
-        date,
-        status: 'AVAILABLE',
-      },
-    });
-
-    if (!availability) return [];
-
-    const slots = [];
-    const start = new Date(`${availability.date.toDateString()} ${availability.startTime}`);
-    const end = new Date(`${availability.date.toDateString()} ${availability.endTime}`);
-    
-    let current = new Date(start);
-    
-    while (current < end) {
-      const slotEnd = new Date(current.getTime() + availability.slotDuration * 60000);
-      
-      if (slotEnd <= end) {
-        slots.push({
-          startTime: current.toTimeString().slice(0, 5),
-          endTime: slotEnd.toTimeString().slice(0, 5),
-          available: true,
-        });
-      }
-      
-      current = slotEnd;
-    }
-
-    return slots;
-  }
-
-  // Helper methods
-  private static calculateEndTime(startTime: string, hours: number): string {
-    const [hoursStr, minutesStr] = startTime.split(':');
-    let totalHours = parseInt(hoursStr) + hours;
-    let endHours = totalHours % 24;
-    return `${endHours.toString().padStart(2, '0')}:${minutesStr}`;
-  }
+private static calculateEndTime(startTime: string, hours: number): string {
+  const [hoursStr, minutesStr] = startTime.split(':');
+  const startDate = new Date();
+  startDate.setHours(parseInt(hoursStr), parseInt(minutesStr), 0, 0);
+  
+  const endDate = new Date(startDate.getTime() + (hours * 60 * 60 * 1000));
+  
+  return `${endDate.getHours().toString().padStart(2, '0')}:${endDate.getMinutes().toString().padStart(2, '0')}`;
+}
 
   static async getBookingStats(dealerId?: string) {
     const where = dealerId ? { dealerId } : {};
@@ -1381,7 +1426,7 @@ export const DatabaseMaintenance = {
   },
 
   async getTableStats() {
-    const tables = ['User', 'Service', 'Package', 'RefreshToken', 'UserProfile', 'DealerProfile'];
+    const tables = ['User', 'Service', 'Package', 'RefreshToken', 'UserProfile', 'DealerProfile', 'DealerAvailability'];
     const stats: any = {};
 
     for (const table of tables) {
