@@ -192,7 +192,7 @@ const DealerBookings: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'SCHEDULED':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+        return 'bg-green-100 text-blue-800 border-blue-200';
       case 'IN_PROGRESS':
         return 'bg-orange-100 text-orange-800 border-orange-200';
       case 'COMPLETED':
@@ -287,7 +287,7 @@ const DealerBookings: React.FC = () => {
           <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <svg className="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v14a2 2 0 002 2z" />
                 </svg>
               </div>

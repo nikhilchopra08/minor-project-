@@ -234,9 +234,9 @@ const DashboardPage: React.FC = () => {
 
             <div className="bg-white p-6 rounded-lg shadow-lg border border-green-200">
               <div className="flex items-center">
-                <div className="p-3 bg-blue-100 rounded-lg">
+                <div className="p-3 bg-green-100 rounded-lg">
                   <svg
-                    className="w-6 h-6 text-blue-600"
+                    className="w-6 h-6 text-green-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

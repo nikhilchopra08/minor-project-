@@ -413,25 +413,25 @@ const DealerPackages: React.FC = () => {
                   
                   {/* Calculation Summary */}
                   {formData.serviceIds.length > 0 && (
-                    <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="mb-4 p-4 bg-green-50 rounded-lg border border-blue-200">
                       <h4 className="text-sm font-medium text-blue-900 mb-2">Package Summary</h4>
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <span className="text-blue-600">Individual Services Total:</span>
+                          <span className="text-green-600">Individual Services Total:</span>
                           <span className="ml-2 font-semibold">${calculateTotalPrice().toFixed(2)}</span>
                         </div>
                         <div>
-                          <span className="text-blue-600">Package Discount:</span>
+                          <span className="text-green-600">Package Discount:</span>
                           <span className="ml-2 font-semibold">
                             ${(calculateTotalPrice() - parseFloat(formData.price || '0')).toFixed(2)}
                           </span>
                         </div>
                         <div>
-                          <span className="text-blue-600">Total Duration:</span>
+                          <span className="text-green-600">Total Duration:</span>
                           <span className="ml-2 font-semibold">{formatDuration(calculateTotalDuration())}</span>
                         </div>
                         <div>
-                          <span className="text-blue-600">Savings:</span>
+                          <span className="text-green-600">Savings:</span>
                           <span className="ml-2 font-semibold text-green-600">
                             {calculateTotalPrice() > 0 ? 
                               `${((1 - parseFloat(formData.price || '0') / calculateTotalPrice()) * 100).toFixed(1)}%` 
@@ -573,7 +573,7 @@ const DealerPackages: React.FC = () => {
                           {pkg.services.map((pkgService, index) => (
                             <span
                               key={pkgService.service.id}
-                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-blue-800"
                             >
                               {pkgService.service.name}
                             </span>
@@ -656,7 +656,7 @@ const DealerPackages: React.FC = () => {
             <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <svg className="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
                 </div>

@@ -421,25 +421,25 @@ const EditPackagePage: React.FC = () => {
                   
                   {/* Calculation Summary */}
                   {formData.serviceIds.length > 0 && (
-                    <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="mb-4 p-4 bg-green-50 rounded-lg border border-blue-200">
                       <h4 className="text-sm font-medium text-blue-900 mb-2">Package Summary</h4>
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <span className="text-blue-600">Individual Services Total:</span>
+                          <span className="text-green-600">Individual Services Total:</span>
                           <span className="ml-2 font-semibold">${calculateTotalPrice().toFixed(2)}</span>
                         </div>
                         <div>
-                          <span className="text-blue-600">Package Discount:</span>
+                          <span className="text-green-600">Package Discount:</span>
                           <span className="ml-2 font-semibold">
                             ${(calculateTotalPrice() - parseFloat(formData.price || '0')).toFixed(2)}
                           </span>
                         </div>
                         <div>
-                          <span className="text-blue-600">Total Duration:</span>
+                          <span className="text-green-600">Total Duration:</span>
                           <span className="ml-2 font-semibold">{formatDuration(calculateTotalDuration())}</span>
                         </div>
                         <div>
-                          <span className="text-blue-600">Savings:</span>
+                          <span className="text-green-600">Savings:</span>
                           <span className="ml-2 font-semibold text-green-600">
                             {calculateTotalPrice() > 0 ? 
                               `${((1 - parseFloat(formData.price || '0') / calculateTotalPrice()) * 100).toFixed(1)}%` 

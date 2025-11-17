@@ -2,26 +2,26 @@ import { CheckCircleIcon } from 'lucide-react';
 
 const SuccessStep: React.FC = () => {
   return (
-    <div className="text-center py-12">
-      <div className="flex justify-center mb-6">
-        <CheckCircleIcon className="h-24 w-24 text-green-500" />
+    <div className="text-center py-16 bg-emerald-50 rounded-2xl border border-emerald-100 mx-4">
+      <div className="flex justify-center mb-8">
+        <CheckCircleIcon className="h-28 w-28 text-emerald-500" />
       </div>
-      <h2 className="text-3xl font-bold text-green-800 mb-4">
+      <h2 className="text-4xl font-bold text-emerald-800 mb-6">
         Registration Successful!
       </h2>
-      <p className="text-green-600 text-lg mb-8 max-w-md mx-auto">
+      <p className="text-emerald-700 text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
         Thank you for registering as a dealer. Your account is being reviewed and you will receive a confirmation email shortly.
       </p>
-      <div className="space-y-4">
+      <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-md mx-auto">
         <button
           onClick={() => window.location.href = '/login'}
-          className="w-full max-w-xs bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors font-medium"
+          className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-white py-4 px-8 rounded-xl text-lg font-semibold transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
         >
           Go to Login
         </button>
         <button
           onClick={() => window.location.href = '/'}
-          className="w-full max-w-xs bg-white text-green-600 border border-green-600 py-3 px-6 rounded-lg hover:bg-green-50 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors font-medium"
+          className="w-full sm:w-auto bg-white text-emerald-500 border-2 border-emerald-500 hover:bg-emerald-500 hover:text-white py-4 px-8 rounded-xl text-lg font-semibold transition-all duration-300 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
         >
           Back to Home
         </button>

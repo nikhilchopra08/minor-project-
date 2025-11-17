@@ -308,7 +308,7 @@ interface PackageCardProps {
 function PackageCard({ pkg, onViewDetails, onContact, formatPrice, getPriceRangeLabel }: PackageCardProps) {
   const priceRange = getPriceRangeLabel(pkg.price);
   const priceRangeColors = {
-    Basic: 'bg-blue-100 text-blue-800',
+    Basic: 'bg-green-100 text-blue-800',
     Standard: 'bg-green-100 text-green-800',
     Premium: 'bg-purple-100 text-purple-800'
   };

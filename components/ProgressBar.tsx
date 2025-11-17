@@ -19,7 +19,7 @@ const ProgressBar: React.FC = () => {
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${
                   currentStep >= step.number
-                    ? 'bg-blue-600 border-blue-600 text-white'
+                    ? 'bg-green-600 border-green-600 text-white'
                     : 'bg-white border-gray-300 text-gray-500'
                 }`}
               >
@@ -30,7 +30,7 @@ const ProgressBar: React.FC = () => {
             {index < steps.length - 1 && (
               <div
                 className={`flex-1 h-1 mx-4 ${
-                  currentStep > step.number ? 'bg-blue-600' : 'bg-gray-300'
+                  currentStep > step.number ? 'bg-green-600' : 'bg-gray-300'
                 }`}
               />
             )}

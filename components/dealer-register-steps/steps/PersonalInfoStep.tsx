@@ -49,7 +49,7 @@ const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({ onNext }) => {
             },
           })}
           type="email"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+          className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
           placeholder="Enter your email"
         />
         {errors.email && (
