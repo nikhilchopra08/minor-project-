@@ -92,7 +92,7 @@ export default function HowItWorks() {
         </div>
 
         {/* CTA Section */}
-        <div className="text-center mt-16 bg-green-50 rounded-2xl shadow-sm p-12 border border-emerald-100">
+        <div className="text-center mt-16 bg-green-50 rounded-2xl shadow-sm border border-emerald-100">
           <h3 className="text-3xl font-semibold text-gray-800 mb-6">
             Ready to Start Your Solar Journey?
           </h3>

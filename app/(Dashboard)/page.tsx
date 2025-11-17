@@ -28,12 +28,12 @@ const page = () => {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="min-h-screen py-20">
+      <section id="how-it-works" className="">
         <HowItWorks/>
       </section>
 
       {/* Get Started Section */}
-      <section id="get-started" className="min-h-screen py-20 bg-green-50">
+      <section id="get-started" className="min-h-screen bg-green-50">
         <DealerRegistration/>
       </section>
 

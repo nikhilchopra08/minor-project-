@@ -23,54 +23,56 @@ export default function Navbar() {
           <div className="flex items-center">
             <button 
               onClick={() => handleNavClick('hero')}
-              className="flex-shrink-0 flex items-center cursor-pointer"
+              className="flex-shrink-0 flex items-center cursor-pointer group"
             >
               <div className="flex items-center space-x-3">
                 {/* <Image src={'/hero.png'} height={10} width={19} alt={"logo"} className='size-16'/> */}
-                <span className="text-3xl font-bold text-white">Greenify</span>
+                <span className="text-3xl font-bold text-white group-hover:text-green-100 transition-colors duration-200 group-hover:scale-105 transform">
+                  Greenify
+                </span>
               </div>
             </button>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-10">
-            <button
-              onClick={() => handleNavClick('dealers')}
-              className="text-white hover:text-green-100 px-5 py-3 rounded-lg text-lg font-semibold transition-colors duration-200"
-            >
-              Find Dealers
-            </button>
+          <div className="hidden md:flex items-center space-x-2">
             <button
               onClick={() => handleNavClick('how-it-works')}
-              className="text-white hover:text-green-100 px-5 py-3 rounded-lg text-lg font-semibold transition-colors duration-200"
+              className="text-white hover:text-green-100 px-5 py-3 rounded-lg text-lg font-semibold transition-all duration-200 hover:bg-green-700 hover:shadow-lg border border-transparent hover:border-green-500 transform hover:-translate-y-0.5"
             >
               How It Works
             </button>
             <button
-              onClick={() => handleNavClick('about')}
-              className="text-white hover:text-green-100 px-5 py-3 rounded-lg text-lg font-semibold transition-colors duration-200"
+              onClick={() => handleNavClick('get-started')}
+              className="text-white hover:text-green-100 px-5 py-3 rounded-lg text-lg font-semibold transition-all duration-200 hover:bg-green-700 hover:shadow-lg border border-transparent hover:border-green-500 transform hover:-translate-y-0.5"
             >
-              About
+              Get Started
+            </button>
+            <button
+              onClick={() => handleNavClick('faq')}
+              className="text-white hover:text-green-100 px-5 py-3 rounded-lg text-lg font-semibold transition-all duration-200 hover:bg-green-700 hover:shadow-lg border border-transparent hover:border-green-500 transform hover:-translate-y-0.5"
+            >
+              FAQ
             </button>
             <button
               onClick={() => handleNavClick('contact')}
-              className="text-white hover:text-green-100 px-5 py-3 rounded-lg text-lg font-semibold transition-colors duration-200"
+              className="text-white hover:text-green-100 px-5 py-3 rounded-lg text-lg font-semibold transition-all duration-200 hover:bg-green-700 hover:shadow-lg border border-transparent hover:border-green-500 transform hover:-translate-y-0.5"
             >
               Contact
             </button>
           </div>
 
           {/* Desktop Auth Buttons */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-4">
             <Link
               href="/login"
-              className="text-white hover:text-green-100 px-5 py-3 rounded-lg text-lg font-semibold transition-colors duration-200"
+              className="text-white hover:text-green-100 px-5 py-3 rounded-lg text-lg font-semibold transition-all duration-200 hover:bg-green-700 hover:shadow-lg border border-transparent hover:border-green-500 transform hover:-translate-y-0.5"
             >
               Login
             </Link>
             <button
               onClick={() => handleNavClick('get-started')}
-              className="bg-green-50 hover:bg-green-50 text-[#708E62] px-8 py-4 rounded-lg text-lg font-bold transition-colors duration-200 shadow-md hover:shadow-lg"
+              className="bg-green-50 hover:bg-green-100 text-[#708E62] px-8 py-4 rounded-lg text-lg font-bold transition-all duration-200 shadow-md hover:shadow-xl transform hover:-translate-y-1 hover:scale-105 border-2 border-transparent hover:border-green-300"
             >
               Get Started
             </button>
@@ -80,7 +82,7 @@ export default function Navbar() {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-4 rounded-lg text-white hover:text-green-100 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+              className="inline-flex items-center justify-center p-4 rounded-lg text-white hover:text-green-100 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white transition-all duration-200 hover:shadow-lg transform hover:scale-105"
               aria-expanded="false"
             >
               <span className="sr-only">Open main menu</span>
@@ -121,42 +123,42 @@ export default function Navbar() {
 
       {/* Mobile Navigation Menu */}
       <div className={`${isMenuOpen ? 'block' : 'hidden'} md:hidden bg-[#708E62] border-t border-green-700`}>
-        <div className="px-4 pt-4 pb-6 space-y-3 sm:px-6">
-          <button
-            onClick={() => handleNavClick('dealers')}
-            className="text-white hover:text-green-100 block px-5 py-4 rounded-lg text-xl font-semibold transition-colors duration-200 w-full text-left"
-          >
-            Find Dealers
-          </button>
+        <div className="px-4 pt-4 pb-6 space-y-2 sm:px-6">
           <button
             onClick={() => handleNavClick('how-it-works')}
-            className="text-white hover:text-green-100 block px-5 py-4 rounded-lg text-xl font-semibold transition-colors duration-200 w-full text-left"
+            className="text-white hover:text-green-100 block px-5 py-4 rounded-lg text-xl font-semibold transition-all duration-200 hover:bg-green-700 hover:shadow-lg w-full text-left border border-transparent hover:border-green-500 transform hover:translate-x-2"
           >
             How It Works
           </button>
           <button
-            onClick={() => handleNavClick('about')}
-            className="text-white hover:text-green-100 block px-5 py-4 rounded-lg text-xl font-semibold transition-colors duration-200 w-full text-left"
+            onClick={() => handleNavClick('get-started')}
+            className="text-white hover:text-green-100 block px-5 py-4 rounded-lg text-xl font-semibold transition-all duration-200 hover:bg-green-700 hover:shadow-lg w-full text-left border border-transparent hover:border-green-500 transform hover:translate-x-2"
           >
-            About
+            Get Started
+          </button>
+          <button
+            onClick={() => handleNavClick('faq')}
+            className="text-white hover:text-green-100 block px-5 py-4 rounded-lg text-xl font-semibold transition-all duration-200 hover:bg-green-700 hover:shadow-lg w-full text-left border border-transparent hover:border-green-500 transform hover:translate-x-2"
+          >
+            FAQ
           </button>
           <button
             onClick={() => handleNavClick('contact')}
-            className="text-white hover:text-green-100 block px-5 py-4 rounded-lg text-xl font-semibold transition-colors duration-200 w-full text-left"
+            className="text-white hover:text-green-100 block px-5 py-4 rounded-lg text-xl font-semibold transition-all duration-200 hover:bg-green-700 hover:shadow-lg w-full text-left border border-transparent hover:border-green-500 transform hover:translate-x-2"
           >
             Contact
           </button>
-          <div className="border-t border-green-700 pt-6">
+          <div className="border-t border-green-700 pt-6 space-y-2">
             <Link
               href="/login"
-              className="text-white hover:text-green-100 block px-5 py-4 rounded-lg text-xl font-semibold transition-colors duration-200"
+              className="text-white hover:text-green-100 block px-5 py-4 rounded-lg text-xl font-semibold transition-all duration-200 hover:bg-green-700 hover:shadow-lg w-full text-left border border-transparent hover:border-green-500 transform hover:translate-x-2"
               onClick={() => setIsMenuOpen(false)}
             >
               Login
             </Link>
             <button
               onClick={() => handleNavClick('get-started')}
-              className="bg-green-50 hover:bg-green-50 text-[#708E62] block px-5 py-4 rounded-lg text-xl font-bold transition-colors duration-200 w-full text-center shadow-md hover:shadow-lg mt-4"
+              className="bg-green-50 hover:bg-green-100 text-[#708E62] block px-5 py-4 rounded-lg text-xl font-bold transition-all duration-200 w-full text-center shadow-md hover:shadow-xl border-2 border-transparent hover:border-green-300 transform hover:scale-105"
             >
               Get Started
             </button>
