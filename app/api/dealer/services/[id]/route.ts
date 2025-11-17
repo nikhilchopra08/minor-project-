@@ -9,6 +9,79 @@ interface Context {
   }>;
 }
 
+export async function GET(req: NextRequest, context: Context) {
+  try {
+    const user = await authMiddleware(req);
+    
+    if (!user) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Unauthorized',
+        },
+        { status: 401 }
+      );
+    }
+
+    if (!roleMiddleware(['DEALER'])(user)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Forbidden',
+        },
+        { status: 403 }
+      );
+    }
+
+    const { id } = await context.params;
+
+    // Check if service exists and belongs to dealer
+    const service = await prisma.service.findFirst({
+      where: {
+        id,
+        dealerId: user.id,
+      },
+      include: {
+        packages: {
+          include: {
+            package: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!service) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Service not found or access denied',
+        },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Service retrieved successfully',
+      data: service,
+    });
+  } catch (error) {
+    console.error('Get service error:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Internal server error',
+      },
+      { status: 500 }
+    );
+  }
+}
+
 export async function PUT(req: NextRequest, context: Context) {
   try {
     const user = await authMiddleware(req);
