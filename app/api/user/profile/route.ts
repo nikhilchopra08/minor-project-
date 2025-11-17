@@ -17,7 +17,8 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    if (!roleMiddleware(['USER'])(user)) {
+    // Allow both USER and DEALER roles to access their profiles
+    if (!roleMiddleware(['USER', 'DEALER'])(user)) {
       return NextResponse.json(
         {
           success: false,
@@ -31,6 +32,7 @@ export async function GET(req: NextRequest) {
       where: { id: user.id },
       include: {
         userProfile: true,
+        dealerProfile: true, // Include dealer profile if exists
       },
     });
 
@@ -44,12 +46,26 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const responseData = {
-      id: userData.id,
-      email: userData.email,
-      role: userData.role,
-      profile: userData.userProfile,
-    };
+    // Prepare response data based on user role
+    let responseData;
+    
+    if (userData.role === 'DEALER') {
+      responseData = {
+        id: userData.id,
+        email: userData.email,
+        role: userData.role,
+        profile: userData.dealerProfile, // Use dealer profile for dealers
+        userProfile: userData.userProfile, // Also include user profile if needed
+      };
+    } else {
+      responseData = {
+        id: userData.id,
+        email: userData.email,
+        role: userData.role,
+        profile: userData.userProfile, // Use user profile for regular users
+        dealerProfile: userData.dealerProfile, // Also include dealer profile if exists
+      };
+    }
 
     return NextResponse.json({
       success: true,
@@ -82,7 +98,8 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    if (!roleMiddleware(['USER'])(user)) {
+    // Allow both USER and DEALER to update their profiles
+    if (!roleMiddleware(['USER', 'DEALER'])(user)) {
       return NextResponse.json(
         {
           success: false,
@@ -105,24 +122,57 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    const updatedUser = await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        userProfile: {
-          update: parsedData.data,
+    // Update different profiles based on user role
+    let updatedUser;
+    
+    if (user.role === 'DEALER') {
+      updatedUser = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          dealerProfile: {
+            update: parsedData.data,
+          },
         },
-      },
-      include: {
-        userProfile: true,
-      },
-    });
+        include: {
+          userProfile: true,
+          dealerProfile: true,
+        },
+      });
+    } else {
+      updatedUser = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          userProfile: {
+            update: parsedData.data,
+          },
+        },
+        include: {
+          userProfile: true,
+          dealerProfile: true,
+        },
+      });
+    }
 
-    const responseData = {
-      id: updatedUser.id,
-      email: updatedUser.email,
-      role: updatedUser.role,
-      profile: updatedUser.userProfile,
-    };
+    // Prepare response data based on user role
+    let responseData;
+    
+    if (updatedUser.role === 'DEALER') {
+      responseData = {
+        id: updatedUser.id,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        profile: updatedUser.dealerProfile,
+        userProfile: updatedUser.userProfile,
+      };
+    } else {
+      responseData = {
+        id: updatedUser.id,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        profile: updatedUser.userProfile,
+        dealerProfile: updatedUser.dealerProfile,
+      };
+    }
 
     return NextResponse.json({
       success: true,

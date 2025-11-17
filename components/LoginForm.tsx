@@ -26,7 +26,12 @@ const LoginForm: React.FC = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      router.push('/dashboard');
+      // Get user data from localStorage to check role
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        const user = JSON.parse(userData);
+        redirectBasedOnRole(user);
+      }
     }
   }, [isAuthenticated, router]);
 
@@ -36,6 +41,14 @@ const LoginForm: React.FC = () => {
       dispatch(clearError());
     };
   }, [dispatch]);
+
+  const redirectBasedOnRole = (user: any) => {
+    if (user.role === 'dealer') {
+      router.push('/dealer/dashboard');
+    } else {
+      router.push('/dashboard');
+    }
+  };
 
   const onSubmit = async (data: LoginFormData) => {
     dispatch(loginStart());
@@ -69,12 +82,13 @@ const LoginForm: React.FC = () => {
       // Update Redux state
       dispatch(loginSuccess(user));
       
-      // Redirect to dashboard
-      router.push('/dashboard');
+      // Redirect based on user role
+      redirectBasedOnRole(user);
     } catch (error) {
       dispatch(loginFailure(error instanceof Error ? error.message : 'Login failed'));
     }
   };
+
   return (
     <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
