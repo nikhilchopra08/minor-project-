@@ -46,7 +46,7 @@ const LoginForm: React.FC = () => {
     if (user.role === 'dealer') {
       router.push('/dealer/dashboard');
     } else {
-      router.push('/dashboard');
+      router.push('/services');
     }
   };
 

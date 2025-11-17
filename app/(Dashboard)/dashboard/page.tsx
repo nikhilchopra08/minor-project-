@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppSelector } from '@/store/hooks';
 import { apiClient } from '@/frontend-lib/api';
-import DashboardHeader from '@/components/DashboardHeader';
+// import DashboardHeader from '@/components/DashboardHeader';
 import ProfileCard from '@/components/ProfileCard';
 import RawResponseCard from '@/components/RawResponseCard';
 import EditProfileModal from '@/components/EditProfileModal';
@@ -100,7 +100,7 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100">
-      <DashboardHeader />
+      {/* <DashboardHeader /> */}
       
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Welcome Section */}

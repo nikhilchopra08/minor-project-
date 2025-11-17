@@ -32,8 +32,12 @@ export async function GET(request: NextRequest) {
     const validatedQuery = AvailabilityQuerySchema.parse(queryParams);
 
     // Parse dates
-    const startDate = new Date(validatedQuery.startDate);
-    const endDate = new Date(validatedQuery.endDate);
+    // const startDate = new Date(validatedQuery.startDate);
+    // const endDate = new Date(validatedQuery.endDate);
+
+
+    const startDate = new Date();
+const endDate = new Date(); // 2 hours later
 
     // Validate date ranges
     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
@@ -102,7 +106,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      availability: allDates,
+      availability: true,
       meta: {
         dealerId: validatedQuery.dealerId,
         startDate: validatedQuery.startDate,

@@ -33,3 +33,8 @@ input {
 textarea{
   color: black !important;
 }
+
+select{
+  color: black !important;
+  
+}

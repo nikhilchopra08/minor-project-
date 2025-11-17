@@ -133,11 +133,11 @@ export default function ServiceBookingPage() {
     // Don't allow past dates
     if (dateObj < today) return false;
     
-    const availableDate = availableDates.find(ad => 
-      new Date(ad.date).toDateString() === dateObj.toDateString()
-    );
+    // const availableDate = availableDates.find(ad => 
+    //   new Date(ad.date).toDateString() === dateObj.toDateString()
+    // );
     
-    return availableDate ? availableDate.isAvailable : false;
+    return true;
   };
 
   const handleInputChange = (field: keyof BookingForm, value: string | number) => {
