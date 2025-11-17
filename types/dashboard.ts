@@ -29,3 +29,27 @@ export interface UpdateProfileData {
   city?: string;
   state?: string;
 }
+// types/dashboard.ts
+export interface DealerProfile {
+  id: string;
+  businessName: string;
+  businessEmail: string;
+  phone: string;
+  gstNumber: string;
+  address: string;
+  city: string;
+  state: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UserData {
+  id: string;
+  email: string;
+  role: 'USER' | 'DEALER' | 'ADMIN';
+  profile?: UserProfile;
+  dealerProfile?: DealerProfile;
+  createdAt: string;
+  updatedAt: string;
+}

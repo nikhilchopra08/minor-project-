@@ -1,9 +1,9 @@
 import React from 'react';
 import { useAppSelector } from '@/store/hooks';
 import ProgressBar from './ProgressBar';
-import PersonalInfoStep from './steps/PersonalInfoStep';
-import AddressStep from './steps/AddressStep';
-import PasswordStep from './steps/PasswordStep';
+import PersonalInfoStep from './user-register-steps/PersonalInfoStep';
+import AddressStep from './user-register-steps/AddressStep';
+import PasswordStep from './user-register-steps/PasswordStep';
 
 const RegisterForm: React.FC = () => {
   const { currentStep, error } = useAppSelector((state) => state.register);
