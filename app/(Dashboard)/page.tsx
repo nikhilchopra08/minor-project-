@@ -16,7 +16,7 @@ const page = () => {
       {/* Hero Section */}
       <section id="hero" className="min-h-screen">
         <Image 
-          className='h-full w-full object-cover' 
+          className='h-[90vh] w-full object-cover' 
           src={'/hero.png'} 
           height={500}  
           width={500} 
