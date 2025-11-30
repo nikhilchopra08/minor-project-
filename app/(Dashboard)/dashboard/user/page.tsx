@@ -125,7 +125,7 @@ const GaugeSpeedometer = ({ value, max, min = 0, label, unit }: {
         })}
       </svg>
       
-      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-center">
+      <div className="absolute bottom-14 left-1/2 transform -translate-x-1/2 text-center">
         <div className="text-4xl font-bold text-emerald-600">{value.toFixed(value < 10 ? 2 : 1)}</div>
         <div className="text-xs text-gray-600 mt-1">{unit}</div>
       </div>

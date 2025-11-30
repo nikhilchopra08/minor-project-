@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 interface Service {
   id: string;
-  title: string;
+  name: string;
   description: string;
   category: string;
   price: number;
@@ -270,17 +270,17 @@ function ServiceCard({ service, onViewDetails, onContact }: ServiceCardProps) {
         <div className="flex justify-between items-start mb-4">
           <div>
             <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-green-700 transition-colors">
-              {service.title}
+              {service.name}
             </h3>
             <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
               {service.category}
             </span>
           </div>
           <div className="text-right">
-            <div className="text-2xl font-bold text-green-600">
-              ${service.price}
-            </div>
             <div className="text-sm text-gray-500">Starting from</div>
+            <div className="text-2xl font-bold text-green-600">
+              ₹{service.price}
+            </div>
           </div>
         </div>
 

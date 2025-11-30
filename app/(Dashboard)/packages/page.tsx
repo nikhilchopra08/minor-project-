@@ -385,10 +385,11 @@ function PackageCard({ pkg, onViewDetails, onContact, formatPrice, getPriceRange
         {/* Price and Actions */}
         <div className="flex items-center justify-between">
           <div>
+            <div className="text-xs text-gray-500">Total package from</div>
+            {/* <div className="text-xs text-gray-500"> from</div> */}
             <div className="text-2xl font-bold text-green-600">
-              {formatPrice(pkg.price)}
+              ₹{(pkg.price)}
             </div>
-            <div className="text-xs text-gray-500">Total package</div>
           </div>
           
           <div className="flex gap-2">

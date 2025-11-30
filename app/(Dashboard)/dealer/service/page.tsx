@@ -301,7 +301,7 @@ const DealerServices: React.FC = () => {
 
                 <div>
                   <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
-                    Price ($) *
+                    Price (₹) *
                   </label>
                   <input
                     type="number"
@@ -458,7 +458,7 @@ const DealerServices: React.FC = () => {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">${service.price.toFixed(2)}</div>
+                        <div className="text-sm text-gray-900">₹{service.price.toFixed(2)}</div>
                         <div className="text-sm text-gray-500">{formatDuration(service.duration)}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

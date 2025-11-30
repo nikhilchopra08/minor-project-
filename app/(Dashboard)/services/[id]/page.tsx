@@ -14,7 +14,7 @@ interface Package {
 
 interface Service {
   id: string;
-  title: string;
+  name: string;
   description: string;
   category: string;
   price: number;
@@ -131,7 +131,7 @@ export default function ServiceDetailPage() {
           <div className="bg-linear-to-r from-green-600 to-emerald-600 p-8 text-white">
             <div className="flex items-start justify-between">
               <div>
-                <h1 className="text-3xl font-bold mb-2">{service.title}</h1>
+                <h1 className="text-3xl font-bold mb-2">{service.name}</h1>
                 <div className="flex items-center gap-4">
                   <span className="bg-green-500 px-3 py-1 rounded-full text-sm font-medium">
                     {service.category}
@@ -143,7 +143,7 @@ export default function ServiceDetailPage() {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold">${service.price}</div>
+                <div className="text-3xl font-bold">₹{service.price}</div>
                 <div className="text-green-100">Starting Price</div>
               </div>
             </div>
@@ -168,9 +168,9 @@ export default function ServiceDetailPage() {
                           <div className="flex justify-between items-center">
                             <div>
                               <h3 className="font-semibold text-gray-900">{pkg.package.name}</h3>
-                              <p className="text-green-600 font-bold text-lg">${pkg.package.price}</p>
+                              <p className="text-green-600 font-bold text-lg">₹{pkg.package.price}</p>
                             </div>
-                            <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                            <button onClick={() => router.push(`/packages/${pkg.package.id}`)} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
                               Select Package
                             </button>
                           </div>

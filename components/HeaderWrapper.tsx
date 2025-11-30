@@ -52,6 +52,7 @@ const HeaderWrapper: React.FC = () => {
         { href: '/services', label: 'Services' },
         { href: '/packages', label: 'Packages' },
         { href: '/progress', label: 'Progress' },
+        { href: '/dashboard/user', label : "Monitor"}
       ];
     } else if (user?.role === 'DEALER') {
       return [

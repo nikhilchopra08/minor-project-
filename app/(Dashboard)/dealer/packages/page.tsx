@@ -244,9 +244,9 @@ const DealerPackages: React.FC = () => {
     const mins = minutes % 60;
     
     if (hours > 0) {
-      return `${hours}h ${mins > 0 ? `${mins}m` : ''}`;
+      return `${hours}h ${mins > 0 ? `${mins}H` : ''}`;
     }
-    return `${mins}m`;
+    return `${mins}h`;
   };
 
   if (loading) {
@@ -340,7 +340,7 @@ const DealerPackages: React.FC = () => {
 
                 <div>
                   <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
-                    Package Price ($) *
+                    Package Price (₹) *
                   </label>
                   <input
                     type="number"
@@ -358,7 +358,7 @@ const DealerPackages: React.FC = () => {
 
                 <div>
                   <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-2">
-                    Total Duration (minutes) *
+                    Total Duration (hours) *
                   </label>
                   <input
                     type="number"
@@ -369,7 +369,7 @@ const DealerPackages: React.FC = () => {
                     required
                     min="1"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition duration-200"
-                    placeholder="e.g., 180"
+                    placeholder="e.g., 3 hours"
                   />
                 </div>
 
@@ -418,17 +418,17 @@ const DealerPackages: React.FC = () => {
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
                           <span className="text-green-600">Individual Services Total:</span>
-                          <span className="ml-2 font-semibold">${calculateTotalPrice().toFixed(2)}</span>
+                          <span className="ml-2 font-semibold text-black">₹{calculateTotalPrice().toFixed(2)}</span>
                         </div>
                         <div>
                           <span className="text-green-600">Package Discount:</span>
-                          <span className="ml-2 font-semibold">
-                            ${(calculateTotalPrice() - parseFloat(formData.price || '0')).toFixed(2)}
+                          <span className="ml-2 font-semibold text-black">
+                            ₹{(calculateTotalPrice() - parseFloat(formData.price || '0')).toFixed(2)}
                           </span>
                         </div>
                         <div>
                           <span className="text-green-600">Total Duration:</span>
-                          <span className="ml-2 font-semibold">{formatDuration(calculateTotalDuration())}</span>
+                          <span className="ml-2 font-semibold text-black">{formatDuration(calculateTotalDuration())}</span>
                         </div>
                         <div>
                           <span className="text-green-600">Savings:</span>
@@ -459,7 +459,7 @@ const DealerPackages: React.FC = () => {
                             <h4 className="font-medium text-gray-900">{service.name}</h4>
                             <p className="text-sm text-gray-500 mt-1 line-clamp-2">{service.description}</p>
                             <div className="flex items-center mt-2 text-sm text-gray-600">
-                              <span>${service.price.toFixed(2)}</span>
+                              <span>₹{service.price.toFixed(2)}</span>
                               <span className="mx-2">•</span>
                               <span>{formatDuration(service.duration)}</span>
                             </div>
@@ -569,22 +569,30 @@ const DealerPackages: React.FC = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex flex-wrap gap-1">
-                          {pkg.services.map((pkgService, index) => (
-                            <span
-                              key={pkgService.service.id}
-                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-blue-800"
-                            >
-                              {pkgService.service.name}
-                            </span>
-                          ))}
-                        </div>
+<div className="flex flex-wrap gap-1">
+  {pkg.services.slice(0, 3).map((pkgService, index) => (
+    <span
+      key={pkgService.service.id}
+      className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-blue-800"
+    >
+      {pkgService.service.name}
+    </span>
+  ))}
+
+  {/* Show +X if more than 3 services */}
+  {pkg.services.length > 3 && (
+    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-300 text-gray-800">
+      +{pkg.services.length - 3}
+    </span>
+  )}
+</div>
+
                         <div className="text-xs text-gray-500 mt-1">
                           {pkg.services.length} service{pkg.services.length !== 1 ? 's' : ''}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">${pkg.price.toFixed(2)}</div>
+                        <div className="text-sm text-gray-900">₹{pkg.price.toFixed(2)}</div>
                         <div className="text-sm text-gray-500">{formatDuration(pkg.duration)}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

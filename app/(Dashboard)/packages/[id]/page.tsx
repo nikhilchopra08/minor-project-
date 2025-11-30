@@ -169,11 +169,11 @@ export default function PackageDetailPage() {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold">{formatPrice(pkg.price)}</div>
+                <div className="text-3xl font-bold">₹{(pkg.price)}</div>
                 <div className="text-green-100">Complete Package</div>
                 {savings > 0 && (
                   <div className="text-green-200 text-sm mt-1">
-                    Save {formatPrice(savings)} vs individual
+                    Save ₹{(savings)} vs individual
                   </div>
                 )}
               </div>
@@ -209,7 +209,7 @@ export default function PackageDetailPage() {
                               </div>
                               <div className="flex items-center">
                                 <Zap className="h-4 w-4 mr-1" />
-                                Individual: {formatPrice(pkgService.service.price)}
+                                Individual: ₹{(pkgService.service.price)}
                               </div>
                             </div>
                           </div>
@@ -225,13 +225,13 @@ export default function PackageDetailPage() {
                     <div className="bg-linear-to-r from-green-500 to-emerald-500 rounded-xl p-6 text-white">
                       <h3 className="text-xl font-bold mb-2">Package Savings</h3>
                       <p className="mb-2">
-                        Individual services total: <span className="font-semibold line-through">{formatPrice(savings + pkg.price)}</span>
+                        Individual services total: <span className="font-semibold line-through">₹{(savings + pkg.price)}</span>
                       </p>
                       <p className="mb-2">
-                        Package price: <span className="font-semibold">{formatPrice(pkg.price)}</span>
+                        Package price: <span className="font-semibold">₹{(pkg.price)}</span>
                       </p>
                       <p className="text-lg font-bold">
-                        You save: <span className="text-yellow-300">{formatPrice(savings)}</span>
+                        You save: <span className="text-yellow-300">₹{(savings)}</span>
                       </p>
                     </div>
                   </section>

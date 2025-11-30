@@ -347,7 +347,7 @@ const EditPackagePage: React.FC = () => {
 
                   <div>
                     <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
-                      Package Price ($) *
+                      Package Price (₹) *
                     </label>
                     <input
                       type="number"
@@ -426,17 +426,17 @@ const EditPackagePage: React.FC = () => {
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
                           <span className="text-green-600">Individual Services Total:</span>
-                          <span className="ml-2 font-semibold">${calculateTotalPrice().toFixed(2)}</span>
+                          <span className="ml-2 font-semibold text-black">₹{calculateTotalPrice().toFixed(2)}</span>
                         </div>
                         <div>
                           <span className="text-green-600">Package Discount:</span>
-                          <span className="ml-2 font-semibold">
-                            ${(calculateTotalPrice() - parseFloat(formData.price || '0')).toFixed(2)}
+                          <span className="ml-2 font-semibold text-black">
+                            ₹{(calculateTotalPrice() - parseFloat(formData.price || '0')).toFixed(2)}
                           </span>
                         </div>
                         <div>
                           <span className="text-green-600">Total Duration:</span>
-                          <span className="ml-2 font-semibold">{formatDuration(calculateTotalDuration())}</span>
+                          <span className="ml-2 font-semibold text-black">{formatDuration(calculateTotalDuration())}</span>
                         </div>
                         <div>
                           <span className="text-green-600">Savings:</span>
@@ -467,7 +467,7 @@ const EditPackagePage: React.FC = () => {
                             <h4 className="font-medium text-gray-900">{service.name}</h4>
                             <p className="text-sm text-gray-500 mt-1 line-clamp-2">{service.description}</p>
                             <div className="flex items-center mt-2 text-sm text-gray-600">
-                              <span>${service.price.toFixed(2)}</span>
+                              <span>₹{service.price.toFixed(2)}</span>
                               <span className="mx-2">•</span>
                               <span>{formatDuration(service.duration)}</span>
                               <span className="mx-2">•</span>
@@ -571,7 +571,7 @@ const EditPackagePage: React.FC = () => {
                   <div key={pkgService.service.id} className="flex items-center justify-between py-2 border-b border-gray-100">
                     <div>
                       <p className="text-sm font-medium text-gray-900">{pkgService.service.name}</p>
-                      <p className="text-xs text-gray-500">${pkgService.service.price.toFixed(2)} • {formatDuration(pkgService.service.duration)}</p>
+                      <p className="text-xs text-gray-500">₹{pkgService.service.price.toFixed(2)} • {formatDuration(pkgService.service.duration)}</p>
                     </div>
                     <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
                       {pkgService.service.category}
