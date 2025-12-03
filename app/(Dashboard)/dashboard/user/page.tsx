@@ -230,7 +230,7 @@ export default function ESP32Dashboard() {
             <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-600 mb-2">
               ESP32 Sensor Dashboard
             </h1>
-            <p className="text-emerald-700/70">Real-time environmental monitoring system</p>
+            {/* <p className="text-emerald-700/70">Real-time environmental monitoring system</p> */}
           </div>
           <div className="flex items-center gap-2 px-5 py-3 rounded-lg bg-white border border-emerald-300 shadow-md">
             {isConnected ? (
